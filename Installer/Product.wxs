@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="Resource Monitor" Language="1033" Version="1.0.0.0" Manufacturer="TheMorgander" UpgradeCode="0c763c6a-c8d4-49aa-a190-a907971aeed2">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" InstallPrivileges="elevated" />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes"/>
+
+    <!--Component List-->
+		<Feature Id="ProductFeature" Title="Installer" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ProductShortcuts"/>
+		</Feature>
+	</Product>
+
+  <!--Additional Assets-->
+  <Fragment>
+    <Icon Id="Icon" SourceFile="..\Resource Monitor\icon.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="Icon" />
+  </Fragment>
+
+  <!--Directory Setup-->
+  <Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="TheMorganderFolder" Name="TheMorgander">
+          <Directory Id="INSTALLFOLDER" Name="Resource Monitor" />
+        </Directory>
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="TheMorganderMenuFolder" Name="TheMorgander">
+          <Directory Id="INSTALLMENUFOLDER" Name="Resource Monitor"/>
+        </Directory>
+      </Directory>
+      <Directory Id="DesktopFolder"/>
+		</Directory>
+	</Fragment>
+
+  <Fragment>
+    <!--Main Setup-->
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <!--Add main exe-->
+      <Component Id="ResourceMonitor">
+        <File Id="ResourceMonitor" Name="Resource Monitor.exe" Source="$(var.ResourceMonitor.TargetPath)"></File>
+        <RemoveFolder Id="RemoveProgramMenuFolder" Directory="TheMorganderMenuFolder" On="uninstall"/>
+        <RemoveFolder Id="RemoveProgramFolder" Directory="INSTALLMENUFOLDER" On="uninstall"/>
+      </Component>
+      <!--Add LibreHardwareLib dll-->
+      <Component Id="LibreLib">
+        <File Id="LibreLibrary" Name="LibreHardwareMonitorLib.dll" Source="..\Resource Monitor\bin\Release\"></File>
+      </Component>
+      <!--Add HidSharp dll-->
+      <Component Id="HidLib">
+        <File Id="HidLibrary" Name="HidSharp.dll" Source="..\Resource Monitor\bin\Release\"></File>
+      </Component>
+      <!--Add NewtonsoftLib dll-->
+      <Component Id="NewtonsoftLib">
+        <File Id="NewtonsoftLibrary" Name="Newtonsoft.Json.dll" Source="..\Resource Monitor\bin\Release\"></File>
+      </Component>
+      <!--Add CodeDom dll-->
+      <Component Id="CodeDomLib">
+        <File Id="CodeDomLibrary" Name="System.CodeDom.dll" Source="..\Resource Monitor\bin\Release\"></File>
+      </Component>
+		</ComponentGroup>
+
+    <!--Shortcut Setup -->
+    <ComponentGroup Id="ProductShortcuts">
+      <!--Creates a start menu shortcut-->
+      <Component Id="Shortcut" Guid="DFF48911-2189-424D-8F77-1F6B034E1397" Directory="INSTALLMENUFOLDER">
+        <Shortcut Id="ResourceMonitorMenuShortcut" Name="Resource Monitor" Description="A tool for monitoring system hardware" Target="[#ResourceMonitor]" WorkingDirectory="INSTALLFOLDER" Icon="Icon"/>
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+      <!--Creates a desktop shortcut-->
+      <Component Id="DesktopShortcutComponent" Guid="BC2CC3B9-E77B-4005-B674-8FE4C61A418E" Directory="DesktopFolder">
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="integer" Value="1" KeyPath="yes" />
+        <Shortcut Id="DesktopShortcut" Name="Resource Monitor" Target="[#ResourceMonitor]" WorkingDirectory="INSTALLFOLDER" Icon="Icon"/>
+      </Component>
+    </ComponentGroup>
+	</Fragment>
+</Wix>

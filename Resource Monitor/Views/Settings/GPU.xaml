@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="ResourceMonitor.Views.Settings.GPU"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" >
+    <Grid>
+        <StackPanel
+            x:Name="GPUStackPanel"
+            Orientation="Vertical">
+            <TextBlock
+                x:Name="GPUTextBlock"
+                Text="GPU Settings" 
+                FontSize="16" 
+                FontWeight="Bold" 
+                TextAlignment="Center" 
+                Background="LightGray" 
+                Margin="2">
+            </TextBlock>
+            <StackPanel 
+                x:Name="GPUHardwareListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="GPUHardwareDeviceStackPanel"
+                    Text="GPU Device" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="GPUHardwareListComboBox" 
+                    ItemsSource="{Binding GPUHardwareList}" 
+                    SelectedValue="{Binding GPUHardware}" 
+                    Loaded="GPUHardwareListComboBoxLoaded" 
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel 
+                x:Name="GPULoadSensorListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="GPULoadSensorListTextBlock"
+                    Text="Load Sensor" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="GPULoadSensorListComboBox" 
+                    ItemsSource="{Binding GPULoadSensorList}" 
+                    SelectedValue="{Binding GPULoadSensor}" 
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel
+                x:Name="GPUTemperatureSensorListStackPanel" 
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="GPUTemperatureSensorListTextBlock" 
+                    Text="Temperature Sensor" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="GPUTemperatureSensorListComboBox" 
+                    ItemsSource="{Binding GPUTemperatureSensorList}" 
+                    SelectedValue="{Binding GPUTemperatureSensor}" 
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

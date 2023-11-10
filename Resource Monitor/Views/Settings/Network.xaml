@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="ResourceMonitor.Views.Settings.Network"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel 
+            x:Name="NetworkStackPanel"
+            Orientation="Vertical">
+            <TextBlock
+                x:Name="NetworkTextBox"
+                Text="Network Settings"
+                FontSize="16" 
+                FontWeight="Bold" 
+                TextAlignment="Center" 
+                Background="LightGray" 
+                Margin="2">
+            </TextBlock>
+            <StackPanel
+                x:Name="NetworkHardwareListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="NetworkHardwareListTextBlock"
+                    Text="Network Device" 
+                    Width="125"
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="NetworkHardwareListComboBox"
+                    ItemsSource="{Binding NetworkHardwareList}" 
+                    SelectedValue="{Binding NetworkHardware}" 
+                    Loaded="NetworkHardwareListComboBoxLoaded"
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel 
+                x:Name="NetworkUploadSensorListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="NetworkUploadSensorListTextBlock"
+                    Text="Upload Sensor" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="NetworkUploadSensorListComboBox"
+                    ItemsSource="{Binding NetworkUploadSensorList}" 
+                    SelectedValue="{Binding NetworkUploadSensor}"
+                    Height="20"
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel
+                x:Name="NetworkDownloadSensorListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="NetworkDownloadSensorListTextBlock"
+                    Text="Download Sensor" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox
+                    x:Name="NetworkDownloadSensorListComboBox"
+                    ItemsSource="{Binding NetworkDownloadSensorList}" 
+                    SelectedValue="{Binding NetworkDownloadSensor}" 
+                    Height="20" 
+                    Width="150"
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

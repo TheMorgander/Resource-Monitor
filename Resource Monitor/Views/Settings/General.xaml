@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="ResourceMonitor.Views.Settings.General"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel 
+            x:Name="GeneralStackPanel"
+            Orientation="Vertical">
+            <TextBlock 
+                x:Name="GeneraTextBlock"
+                Text="General Settings" 
+                FontSize="16" 
+                FontWeight="Bold" 
+                TextAlignment="Center" 
+                Background="LightGray" 
+                Margin="2">
+            </TextBlock>
+            <StackPanel 
+                x:Name="GeneralRefreshFrequencyStackPanel"
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="GeneralRefreshFrequencyTextBlock"
+                    Text="Refresh Frequency"
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <TextBox 
+                    x:Name="GeneralRefreshFrequencyTextBox"
+                    Text="{Binding GeneralRefreshFrequency}"
+                    Width="75"
+                    Height="20"
+                    Margin="2">
+                </TextBox>
+            </StackPanel>
+            <StackPanel 
+                x:Name="GeneralHiddenDelayStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="GeneralHiddenDelayTextBlock"
+                    Text="Hidden Delay" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <TextBox 
+                    x:Name="GeneralHiddenDelayTextBox"
+                    Text="{Binding GeneralHiddenDelay}"
+                    Width="75" 
+                    Height="20" 
+                    Margin="2">
+                </TextBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
