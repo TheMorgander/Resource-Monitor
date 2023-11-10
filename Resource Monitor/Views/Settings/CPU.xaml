@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="ResourceMonitor.Views.Settings.CPU"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel 
+            x:Name="CPUStackPanel"
+            Orientation="Vertical">
+            <TextBlock 
+                x:Name="CPUTextBlock"
+                Text="CPU Settings" 
+                FontSize="16" 
+                FontWeight="Bold" 
+                TextAlignment="Center" 
+                Background="LightGray" 
+                Margin="2">
+            </TextBlock>
+            <StackPanel 
+                x:Name="CPUHardwareListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="CPUHardwareListTextBlock"
+                    Text="CPU Device" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="CPUHardwareListComboBox" 
+                    ItemsSource="{Binding CPUHardwareList}" 
+                    SelectedValue="{Binding CPUHardware}" 
+                    Loaded="CPUHardwareListComboBoxLoaded"
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel 
+                x:Name="CPULoadSensorListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="CPULoadSensorListTextBlock"
+                    Text="Load Sensor" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="CPULoadSensorListComboBox" 
+                    ItemsSource="{Binding CPULoadSensorList}" 
+                    SelectedValue="{Binding CPULoadSensor}" 
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel 
+                x:Name="CPUTemperatureSensorListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="CPUTemperatureSensorListTextBlock"
+                    Text="Temperature Sensor"
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="CPUTemperatureSensorListComboBox"
+                    ItemsSource="{Binding CPUTemperatureSensorList}"  
+                    SelectedValue="{Binding CPUTemperatureSensor}" 
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

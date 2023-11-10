@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="ResourceMonitor.Views.Settings.RAM"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid>
+        <StackPanel 
+            x:Name="RAMStackPanel"
+            Orientation="Vertical">
+            <TextBlock 
+                x:Name="RAMTextBlock"
+                Text="RAM Settings" 
+                FontSize="16" 
+                FontWeight="Bold" 
+                TextAlignment="Center" 
+                Background="LightGray"
+                Margin="2">
+            </TextBlock>
+            <StackPanel 
+                x:Name="RAMHardwareListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="RAMHardwareListTextBlock"
+                    Text="RAM Device" 
+                    Width="125" 
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="RAMHardwareListComboBox"
+                    ItemsSource="{Binding RAMHardwareList}" 
+                    SelectedValue="{Binding RAMHardware}" 
+                    Loaded="RAMHardwareListComboBoxLoaded"
+                    Height="20" 
+                    Width="150"
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+            <StackPanel 
+                x:Name="RAMLoadSensorListStackPanel"
+                Orientation="Horizontal">
+                <TextBlock 
+                    x:Name="RAMLoadSensorListTextBlock"
+                    Text="Load Sensor" 
+                    Width="125"
+                    Margin="2">
+                </TextBlock>
+                <ComboBox 
+                    x:Name="RAMLoadSensorListComboBox"
+                    ItemsSource="{Binding RAMLoadSensorList}" 
+                    SelectedValue="{Binding RAMLoadSensor}" 
+                    Height="20" 
+                    Width="150" 
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

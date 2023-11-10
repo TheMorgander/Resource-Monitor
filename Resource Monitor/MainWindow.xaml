@@ -1,13 +1,13 @@
-﻿<Window x:Class="Monitor.MainWindow"
+﻿<Window x:Class="ResourceMonitor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Monitor"
+        xmlns:local="clr-namespace:ResourceMonitor.Views.Resources"
         mc:Ignorable="d"
-        Title="AAA" 
-        Height="30" 
-        Width="500"
+        Title="Resource Monitor" 
+        Height="45" 
+        Width="300"
         ShowInTaskbar="False"
         WindowStyle="None"
         Topmost="True"
@@ -15,11 +15,40 @@
         WindowStartupLocation="Manual"
         ResizeMode="NoResize"
         AllowsTransparency="True"
-        Opacity="50">
+        Opacity="50"
+        MouseDoubleClick="OnDoubleClick"
+        MouseRightButtonUp="OnRightClick" >
     <Window.Background>
-        <SolidColorBrush Opacity="0.5" Color="Black"/>
+        <SolidColorBrush 
+            Opacity="0.5" 
+            Color="Black">
+        </SolidColorBrush>
     </Window.Background>
-    <Grid>
-        
+    <Grid 
+        HorizontalAlignment="Center"
+        Margin="2">
+        <Border 
+            BorderBrush="White" 
+            BorderThickness="2" 
+            Opacity="0.75">
+        </Border>
+        <StackPanel 
+            Orientation="Horizontal">
+            <local:CPU 
+                Margin="10,0,0,0">
+            </local:CPU>
+            <local:GPU 
+                Margin="0,0,0,0">
+            </local:GPU>
+            <local:RAM 
+                Margin="0,0,0,0">
+            </local:RAM>
+            <local:Disk 
+                Margin="0,0,0,0">
+            </local:Disk>
+            <local:Network 
+                Margin="0,0,10,0">
+            </local:Network>
+        </StackPanel>
     </Grid>
 </Window>
