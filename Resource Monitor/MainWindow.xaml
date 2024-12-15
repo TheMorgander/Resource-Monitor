@@ -26,6 +26,7 @@
     </Window.Background>
     <Grid 
         HorizontalAlignment="Center"
+        VerticalAlignment="Bottom"
         Margin="2">
         <Border 
             BorderBrush="White" 

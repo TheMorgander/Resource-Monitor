@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using ResourceMonitor.ViewModels;
 using ResourceMonitor.ViewModels.Resources.CPU;
+using System;
 using System.IO;
+using System.Windows;
 
 namespace ResourceMonitor.Models
 {
@@ -24,7 +26,6 @@ namespace ResourceMonitor.Models
         private struct Settings
         {
             public int RefreshFrequency { get; set; }
-            public int HiddenDelay { get; set; }
 
             public string CPUHardware { get; set; }
             public string CPULoadSensor { get; set; }
@@ -61,72 +62,87 @@ namespace ResourceMonitor.Models
 
         public void ReadSettings()
         {
-            string settingsString = File.ReadAllText("settings.json");
-            Settings settingsClass = JsonConvert.DeserializeObject<Settings>(settingsString);
+            try
+            {
+                string settingsString = File.ReadAllText("settings.json");
+                Settings settingsClass = JsonConvert.DeserializeObject<Settings>(settingsString);
 
-            var general = GeneralViewModel.GetInstance();
-            general.GeneralRefreshFrequency = settingsClass.RefreshFrequency;
-            general.GeneralHiddenDelay = settingsClass.HiddenDelay;
+                var general = GeneralViewModel.GetInstance();
+                general.GeneralRefreshFrequency = settingsClass.RefreshFrequency;
 
-            var cpu = CPUViewModel.GetInstance();
-            cpu.CPUHardware = settingsClass.CPUHardware;
-            cpu.CPULoadSensor = settingsClass.CPULoadSensor;
-            cpu.CPUTemperatureSensor = settingsClass.CPUTemperatureSensor;
+                var cpu = CPUViewModel.GetInstance();
+                cpu.CPUHardware = settingsClass.CPUHardware;
+                cpu.CPULoadSensor = settingsClass.CPULoadSensor;
+                cpu.CPUTemperatureSensor = settingsClass.CPUTemperatureSensor;
 
-            var gpu = GPUViewModel.GetInstance();
-            gpu.GPUHardware = settingsClass.GPUHardware;
-            gpu.GPULoadSensor = settingsClass.GPULoadSensor;
-            gpu.GPUTemperatureSensor = settingsClass.GPUTemperatureSensor;
+                var gpu = GPUViewModel.GetInstance();
+                gpu.GPUHardware = settingsClass.GPUHardware;
+                gpu.GPULoadSensor = settingsClass.GPULoadSensor;
+                gpu.GPUTemperatureSensor = settingsClass.GPUTemperatureSensor;
 
-            var ram = RAMViewModel.GetInstance();
-            ram.RAMHardware = settingsClass.RAMHardware;
-            ram.RAMLoadSensor = settingsClass.RAMLoadSensor;
+                var ram = RAMViewModel.GetInstance();
+                ram.RAMHardware = settingsClass.RAMHardware;
+                ram.RAMLoadSensor = settingsClass.RAMLoadSensor;
 
-            var disk = DiskViewModel.GetInstance();
-            disk.DiskHardware = settingsClass.DiskHardware;
-            disk.DiskReadSensor = settingsClass.DiskReadSensor;
-            disk.DiskWriteSensor = settingsClass.DiskWriteSensor;
+                var disk = DiskViewModel.GetInstance();
+                disk.DiskHardware = settingsClass.DiskHardware;
+                disk.DiskReadSensor = settingsClass.DiskReadSensor;
+                disk.DiskWriteSensor = settingsClass.DiskWriteSensor;
 
-            var network = NetworkViewModel.GetInstance();
-            network.NetworkHardware = settingsClass.NetworkHardware;
-            network.NetworkUploadSensor = settingsClass.NetworkUploadSensor;
-            network.NetworkDownloadSensor = settingsClass.NetworkDownloadSensor;
+                var network = NetworkViewModel.GetInstance();
+                network.NetworkHardware = settingsClass.NetworkHardware;
+                network.NetworkUploadSensor = settingsClass.NetworkUploadSensor;
+                network.NetworkDownloadSensor = settingsClass.NetworkDownloadSensor;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                Environment.Exit(-1);
+            }
         }
 
         public void WriteSettings()
         {
-            Settings settingsClass = new Settings();
+            try
+            {
+                Settings settingsClass = new Settings();
 
-            var general = GeneralViewModel.GetInstance();
-            settingsClass.RefreshFrequency = general.GeneralRefreshFrequency;
-            settingsClass.HiddenDelay = general.GeneralHiddenDelay;
+                var general = GeneralViewModel.GetInstance();
+                settingsClass.RefreshFrequency = general.GeneralRefreshFrequency;
 
-            var cpu = CPUViewModel.GetInstance();
-            settingsClass.CPUHardware = cpu.CPUHardware;
-            settingsClass.CPULoadSensor = cpu.CPULoadSensor;
-            settingsClass.CPUTemperatureSensor = cpu.CPUTemperatureSensor;
+                var cpu = CPUViewModel.GetInstance();
+                settingsClass.CPUHardware = cpu.CPUHardware;
+                settingsClass.CPULoadSensor = cpu.CPULoadSensor;
+                settingsClass.CPUTemperatureSensor = cpu.CPUTemperatureSensor;
 
-            var gpu = GPUViewModel.GetInstance();
-            settingsClass.GPUHardware = gpu.GPUHardware;
-            settingsClass.GPULoadSensor = gpu.GPULoadSensor;
-            settingsClass.GPUTemperatureSensor = gpu.GPUTemperatureSensor;
+                var gpu = GPUViewModel.GetInstance();
+                settingsClass.GPUHardware = gpu.GPUHardware;
+                settingsClass.GPULoadSensor = gpu.GPULoadSensor;
+                settingsClass.GPUTemperatureSensor = gpu.GPUTemperatureSensor;
 
-            var ram = RAMViewModel.GetInstance();
-            settingsClass.RAMHardware = ram.RAMHardware;
-            settingsClass.RAMLoadSensor = ram.RAMLoadSensor;
+                var ram = RAMViewModel.GetInstance();
+                settingsClass.RAMHardware = ram.RAMHardware;
+                settingsClass.RAMLoadSensor = ram.RAMLoadSensor;
 
-            var disk = DiskViewModel.GetInstance();
-            settingsClass.DiskHardware = disk.DiskHardware;
-            settingsClass.DiskReadSensor = disk.DiskReadSensor;
-            settingsClass.DiskWriteSensor = disk.DiskWriteSensor;
+                var disk = DiskViewModel.GetInstance();
+                settingsClass.DiskHardware = disk.DiskHardware;
+                settingsClass.DiskReadSensor = disk.DiskReadSensor;
+                settingsClass.DiskWriteSensor = disk.DiskWriteSensor;
 
-            var network = NetworkViewModel.GetInstance();
-            settingsClass.NetworkHardware = network.NetworkHardware;
-            settingsClass.NetworkUploadSensor = network.NetworkUploadSensor;
-            settingsClass.NetworkDownloadSensor = network.NetworkDownloadSensor;
+                var network = NetworkViewModel.GetInstance();
+                settingsClass.NetworkHardware = network.NetworkHardware;
+                settingsClass.NetworkUploadSensor = network.NetworkUploadSensor;
+                settingsClass.NetworkDownloadSensor = network.NetworkDownloadSensor;
 
-            string settingsString = JsonConvert.SerializeObject(settingsClass);
-            File.WriteAllText("settings.json", settingsString);
+                string settingsString = JsonConvert.SerializeObject(settingsClass);
+                File.WriteAllText("settings.json", settingsString);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         #endregion
     }

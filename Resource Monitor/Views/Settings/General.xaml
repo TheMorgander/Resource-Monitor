@@ -34,23 +34,6 @@
                     Margin="2">
                 </TextBox>
             </StackPanel>
-            <StackPanel 
-                x:Name="GeneralHiddenDelayStackPanel"
-                Orientation="Horizontal">
-                <TextBlock 
-                    x:Name="GeneralHiddenDelayTextBlock"
-                    Text="Hidden Delay" 
-                    Width="125" 
-                    Margin="2">
-                </TextBlock>
-                <TextBox 
-                    x:Name="GeneralHiddenDelayTextBox"
-                    Text="{Binding GeneralHiddenDelay}"
-                    Width="75" 
-                    Height="20" 
-                    Margin="2">
-                </TextBox>
-            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
