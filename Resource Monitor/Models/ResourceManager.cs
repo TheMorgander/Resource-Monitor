@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace ResourceMonitor.Models
 {
@@ -48,26 +49,38 @@ namespace ResourceMonitor.Models
         #region Public Methods
         public async void Start()
         {
-            resources.Add(CPU);
-            resources.Add(GPU);
-            resources.Add(RAM);
-            resources.Add(Disk);
-            resources.Add(Network);
-
-            await Task.Run(() => 
+            try
             {
-                while (true)
+                resources.Clear();
+                resources.Add(CPU);
+                resources.Add(GPU);
+                resources.Add(RAM);
+                resources.Add(Disk);
+                resources.Add(Network);
+
+                await Task.Run(() =>
                 {
-                    HardwareManager.Update();
-
-                    foreach (IResource resource in resources)
+                    while (true)
                     {
-                        resource.Update();
-                    }
+                        HardwareManager.Update();
 
-                    Thread.Sleep(Math.Max(General.GeneralRefreshFrequency, 100));
-                }
-            }); 
+                        foreach (IResource resource in resources)
+                        {
+                            resource.Update();
+                        }
+
+                        Thread.Sleep(Math.Max(General.GeneralRefreshFrequency, 100));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+
+                Start();
+            }
+
         }
         #endregion
     }

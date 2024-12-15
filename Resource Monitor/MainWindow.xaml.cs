@@ -18,6 +18,10 @@ namespace ResourceMonitor
         {
             InitializeComponent();
 
+            SettingsManager.Initialize();
+            HardwareManager.Open();
+            ResourceManager.Start();
+
             if (SystemParameters.IsRemoteSession == false) 
             {
                 Left = (SystemParameters.PrimaryScreenWidth / 2) - (this.Width / 2);
@@ -27,11 +31,7 @@ namespace ResourceMonitor
             {
                 Left = (SystemParameters.VirtualScreenWidth / 2) - (this.Width / 2);
                 Top = 0;
-            }
-
-            SettingsManager.Initialize();
-            HardwareManager.Open();
-            ResourceManager.Start();
+            }          
         }
         #endregion
 
@@ -45,9 +45,16 @@ namespace ResourceMonitor
 
         private void OnRightClick(object sender, MouseButtonEventArgs e)
         {
-            Application.Current.MainWindow.Hide();
-            Thread.Sleep(ResourceManager.General.GeneralHiddenDelay);
-            Application.Current.MainWindow.Show();
+            if (SystemParameters.IsRemoteSession == false)
+            {
+                if (Top == 0) Top = (SystemParameters.PrimaryScreenHeight - this.Height);
+                else Top = 0;
+            }
+            else
+            {
+                if (Top == 0) Top = (SystemParameters.VirtualScreenHeight - this.Height);
+                else Top = 0;
+            }
         }
         #endregion
     }

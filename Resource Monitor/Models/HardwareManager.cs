@@ -1,4 +1,5 @@
 ﻿using LibreHardwareMonitor.Hardware;
+using System;
 using System.Linq;
 
 namespace ResourceMonitor.Models
@@ -54,11 +55,19 @@ namespace ResourceMonitor.Models
 
         public IHardware GetHardware(string hardware, HardwareType hardwareType)
         {
-            if (hardware != null)
+            try
             {
-                var hard = computer.Hardware.FirstOrDefault(h => (h.Name == hardware) && (h.HardwareType == hardwareType));
-                
-                return hard;
+                if (hardware != null)
+                {
+                    var hard = computer.Hardware.FirstOrDefault(h => (h.Name == hardware) && (h.HardwareType == hardwareType));
+
+                    return hard;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
 
             return null;
@@ -66,12 +75,20 @@ namespace ResourceMonitor.Models
 
         public ISensor GetSensor(string hardware, string sensor, SensorType sensorType)
         {
-            if (hardware != null && sensor != null)
+            try
             {
-                var hard = computer.Hardware.FirstOrDefault(h => h.Name == hardware);
-                var prop = hard.Sensors.FirstOrDefault(p => (p.Name == sensor) && (p.SensorType == sensorType));
-                
-                return prop;
+                if (hardware != null && sensor != null)
+                {
+                    var hard = computer.Hardware.FirstOrDefault(h => h.Name == hardware);
+                    var prop = hard.Sensors.FirstOrDefault(p => (p.Name == sensor) && (p.SensorType == sensorType));
+
+                    return prop;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
 
             return null;
@@ -79,14 +96,33 @@ namespace ResourceMonitor.Models
 
         public IHardware[] GetHardwareList()
         {
-            return computer.Hardware.ToArray();
+            try
+            {
+                return computer.Hardware.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+
+            return null;
         }
 
         public ISensor[] GetSensorList(string hardware)
         {
-            var hard = computer.Hardware.FirstOrDefault(h => h.Name == hardware);
-            
-            return hard.Sensors.ToArray();
+            try
+            {
+                var hard = computer.Hardware.FirstOrDefault(h => h.Name == hardware);
+                return hard.Sensors.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+
+            return null;
         }
         #endregion
     }
