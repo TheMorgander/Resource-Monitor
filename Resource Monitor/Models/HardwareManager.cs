@@ -26,30 +26,62 @@ namespace ResourceMonitor.Models
         #region Public Methods
         public void Open()
         {
-            computer.IsCpuEnabled = true;
-            computer.IsGpuEnabled = true;
-            computer.IsMemoryEnabled = true;
-            computer.IsStorageEnabled = true;
-            computer.IsNetworkEnabled = true;
+            try
+            {
+                computer.IsCpuEnabled = true;
+                computer.IsGpuEnabled = true;
+                computer.IsMemoryEnabled = true;
+                computer.IsStorageEnabled = true;
+                computer.IsNetworkEnabled = true;
 
-            computer.Open();
+                computer.Open();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         public void Close()
         {
-            computer.Close();
+            try
+            {
+                computer.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         public void Reset() 
         {
-            computer.Reset();
+            try
+            {
+                computer.Reset();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         public void Update()
         {
-            foreach (var hardware in computer.Hardware)
+            try
             {
-                hardware.Update();
+                foreach (var hardware in computer.Hardware)
+                {
+                    hardware.Update();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 

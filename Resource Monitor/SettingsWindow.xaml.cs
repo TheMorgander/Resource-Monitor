@@ -1,4 +1,5 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows;
 
 namespace ResourceMonitor
@@ -20,12 +21,28 @@ namespace ResourceMonitor
 
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
-            SettingsManager.WriteSettings();
+            try
+            {
+                SettingsManager.WriteSettings();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         private void ExitButtonClick(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            try
+            {
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
     }
 }

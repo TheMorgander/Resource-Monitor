@@ -20,8 +20,6 @@ namespace ResourceMonitor.ViewModels
 
         #region Properties
         public int GeneralRefreshFrequency { get; set; }
-        public int GeneralHiddenDelay { get; set; }
-        public string OverlayLocation { get; set; }
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows.Controls;
 
 namespace ResourceMonitor.Views.Settings
@@ -14,30 +15,38 @@ namespace ResourceMonitor.Views.Settings
         #region Constructors
         public RAM()
         {
-            InitializeComponent();
-
-            DataContext = ResourceManager.RAM;
-
-            if (ResourceManager.RAM.RAMHardwareList.Count == 0)
+            try
             {
-                foreach (var hardware in HardwareManager.GetHardwareList())
-                {
-                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Memory)
-                    {
-                        ResourceManager.RAM.RAMHardwareList.Add(hardware.Name);
-                    }
-                }
+                InitializeComponent();
 
-                if (ResourceManager.RAM.RAMHardware != null)
+                DataContext = ResourceManager.RAM;
+
+                if (ResourceManager.RAM.RAMHardwareList.Count == 0)
                 {
-                    foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.RAM.RAMHardware))
+                    foreach (var hardware in HardwareManager.GetHardwareList())
                     {
-                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
+                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Memory)
                         {
-                            ResourceManager.RAM.RAMLoadSensorList.Add(sensor.Name);
+                            ResourceManager.RAM.RAMHardwareList.Add(hardware.Name);
+                        }
+                    }
+
+                    if (ResourceManager.RAM.RAMHardware != null)
+                    {
+                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.RAM.RAMHardware))
+                        {
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
+                            {
+                                ResourceManager.RAM.RAMLoadSensorList.Add(sensor.Name);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
         #endregion
@@ -45,19 +54,27 @@ namespace ResourceMonitor.Views.Settings
         #region Events
         private void RAMSelected(object sender, SelectionChangedEventArgs e)
         {
-            if (ResourceManager.RAM.RAMHardware != null)
+            try
             {
-                ResourceManager.RAM.RAMLoadSensorList.Clear();
-
-                foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.RAM.RAMHardware))
+                if (ResourceManager.RAM.RAMHardware != null)
                 {
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
-                    {
-                        ResourceManager.RAM.RAMLoadSensorList.Add(sensor.Name);
-                    }
-                }
+                    ResourceManager.RAM.RAMLoadSensorList.Clear();
 
-                ResourceManager.RAM.RAMLoadSensor = null;
+                    foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.RAM.RAMHardware))
+                    {
+                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
+                        {
+                            ResourceManager.RAM.RAMLoadSensorList.Add(sensor.Name);
+                        }
+                    }
+
+                    ResourceManager.RAM.RAMLoadSensor = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 

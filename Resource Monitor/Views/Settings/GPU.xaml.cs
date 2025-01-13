@@ -1,4 +1,5 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows.Controls;
 
 namespace ResourceMonitor.Views.Settings
@@ -14,24 +15,58 @@ namespace ResourceMonitor.Views.Settings
         #region Constructors
         public GPU()
         {
-            InitializeComponent();
-
-            DataContext = ResourceManager.GPU;
-
-            if (ResourceManager.GPU.GPUHardwareList.Count == 0)
+            try
             {
-                foreach (var hardware in HardwareManager.GetHardwareList())
+                InitializeComponent();
+
+                DataContext = ResourceManager.GPU;
+
+                if (ResourceManager.GPU.GPUHardwareList.Count == 0)
                 {
-                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.GpuIntel || 
-                        hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.GpuNvidia ||
-                        hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.GpuAmd)
+                    foreach (var hardware in HardwareManager.GetHardwareList())
                     {
-                        ResourceManager.GPU.GPUHardwareList.Add(hardware.Name);
+                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.GpuIntel ||
+                            hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.GpuNvidia ||
+                            hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.GpuAmd)
+                        {
+                            ResourceManager.GPU.GPUHardwareList.Add(hardware.Name);
+                        }
+                    }
+
+                    if (ResourceManager.GPU.GPUHardware != null)
+                    {
+                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.GPU.GPUHardware))
+                        {
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
+                            {
+                                ResourceManager.GPU.GPULoadSensorList.Add(sensor.Name);
+                            }
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Temperature)
+                            {
+                                ResourceManager.GPU.GPUTemperatureSensorList.Add(sensor.Name);
+                            }
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+        #endregion
 
+        #region Events
+        private void GPUSelected(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
                 if (ResourceManager.GPU.GPUHardware != null)
                 {
+                    ResourceManager.GPU.GPULoadSensorList.Clear();
+                    ResourceManager.GPU.GPUTemperatureSensorList.Clear();
+
                     foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.GPU.GPUHardware))
                     {
                         if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
@@ -43,33 +78,15 @@ namespace ResourceMonitor.Views.Settings
                             ResourceManager.GPU.GPUTemperatureSensorList.Add(sensor.Name);
                         }
                     }
+
+                    ResourceManager.GPU.GPULoadSensor = null;
+                    ResourceManager.GPU.GPUTemperatureSensor = null;
                 }
             }
-        }
-        #endregion
-
-        #region Events
-        private void GPUSelected(object sender, SelectionChangedEventArgs e)
-        {
-            if (ResourceManager.GPU.GPUHardware != null)
+            catch (Exception ex)
             {
-                ResourceManager.GPU.GPULoadSensorList.Clear();
-                ResourceManager.GPU.GPUTemperatureSensorList.Clear();
-
-                foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.GPU.GPUHardware))
-                {
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
-                    {
-                        ResourceManager.GPU.GPULoadSensorList.Add(sensor.Name);
-                    }
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Temperature)
-                    {
-                        ResourceManager.GPU.GPUTemperatureSensorList.Add(sensor.Name);
-                    }
-                }
-
-                ResourceManager.GPU.GPULoadSensor = null;
-                ResourceManager.GPU.GPUTemperatureSensor = null;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 

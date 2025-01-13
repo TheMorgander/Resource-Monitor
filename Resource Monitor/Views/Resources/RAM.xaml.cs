@@ -1,4 +1,5 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows.Controls;
 
 namespace ResourceMonitor.Views.Resources
@@ -14,9 +15,17 @@ namespace ResourceMonitor.Views.Resources
         #region Constructors
         public RAM()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
-            DataContext = ResourceManager.RAM;
+                DataContext = ResourceManager.RAM;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         #endregion
     }

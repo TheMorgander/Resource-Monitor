@@ -1,5 +1,6 @@
 ﻿using ResourceMonitor.Models;
 using ResourceMonitor.ViewModels.Resources.CPU;
+using System;
 using System.Windows.Controls;
 
 namespace ResourceMonitor.Views.Settings
@@ -15,22 +16,56 @@ namespace ResourceMonitor.Views.Settings
         #region Constructors
         public CPU()
         {
-            InitializeComponent();
-
-            DataContext = CPUViewModel.GetInstance();
-
-            if (ResourceManager.CPU.CPUHardwareList.Count == 0)
+            try
             {
-                foreach (var hardware in HardwareManager.GetHardwareList())
+                InitializeComponent();
+
+                DataContext = CPUViewModel.GetInstance();
+
+                if (ResourceManager.CPU.CPUHardwareList.Count == 0)
                 {
-                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Cpu)
+                    foreach (var hardware in HardwareManager.GetHardwareList())
                     {
-                        ResourceManager.CPU.CPUHardwareList.Add(hardware.Name);
+                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Cpu)
+                        {
+                            ResourceManager.CPU.CPUHardwareList.Add(hardware.Name);
+                        }
+                    }
+
+                    if (ResourceManager.CPU.CPUHardware != null)
+                    {
+                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.CPU.CPUHardware))
+                        {
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
+                            {
+                                ResourceManager.CPU.CPULoadSensorList.Add(sensor.Name);
+                            }
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Temperature)
+                            {
+                                ResourceManager.CPU.CPUTemperatureSensorList.Add(sensor.Name);
+                            }
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+        #endregion
 
+        #region Events
+        private void CPUSelected(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
                 if (ResourceManager.CPU.CPUHardware != null)
                 {
+                    ResourceManager.CPU.CPULoadSensorList.Clear();
+                    ResourceManager.CPU.CPUTemperatureSensorList.Clear();
+
                     foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.CPU.CPUHardware))
                     {
                         if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
@@ -42,33 +77,15 @@ namespace ResourceMonitor.Views.Settings
                             ResourceManager.CPU.CPUTemperatureSensorList.Add(sensor.Name);
                         }
                     }
+
+                    ResourceManager.GPU.GPULoadSensor = null;
+                    ResourceManager.GPU.GPUTemperatureSensor = null;
                 }
             }
-        }
-        #endregion
-
-        #region Events
-        private void CPUSelected(object sender, SelectionChangedEventArgs e)
-        {
-            if (ResourceManager.CPU.CPUHardware != null)
+            catch (Exception ex)
             {
-                ResourceManager.CPU.CPULoadSensorList.Clear();
-                ResourceManager.CPU.CPUTemperatureSensorList.Clear();
-
-                foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.CPU.CPUHardware))
-                {
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
-                    {
-                        ResourceManager.CPU.CPULoadSensorList.Add(sensor.Name);
-                    }
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Temperature)
-                    {
-                        ResourceManager.CPU.CPUTemperatureSensorList.Add(sensor.Name);
-                    }
-                }
-
-                ResourceManager.GPU.GPULoadSensor = null;
-                ResourceManager.GPU.GPUTemperatureSensor = null;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 

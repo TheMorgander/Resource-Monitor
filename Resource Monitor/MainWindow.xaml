@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Resource Monitor" 
         Height="45" 
-        Width="300"
+        Width="325"
         ShowInTaskbar="False"
         WindowStyle="None"
         Topmost="True"

@@ -1,4 +1,5 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows.Controls;
 
 namespace ResourceMonitor.Views.Settings
@@ -14,22 +15,56 @@ namespace ResourceMonitor.Views.Settings
         #region Constructors
         public Network()
         {
-            InitializeComponent();
-
-            DataContext = ResourceManager.Network;
-
-            if (ResourceManager.Network.NetworkHardwareList.Count == 0)
+            try
             {
-                foreach (var hardware in HardwareManager.GetHardwareList())
+                InitializeComponent();
+
+                DataContext = ResourceManager.Network;
+
+                if (ResourceManager.Network.NetworkHardwareList.Count == 0)
                 {
-                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Network)
+                    foreach (var hardware in HardwareManager.GetHardwareList())
                     {
-                        ResourceManager.Network.NetworkHardwareList.Add(hardware.Name);
+                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Network)
+                        {
+                            ResourceManager.Network.NetworkHardwareList.Add(hardware.Name);
+                        }
+                    }
+
+                    if (ResourceManager.Network.NetworkHardware != null)
+                    {
+                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Network.NetworkHardware))
+                        {
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                            {
+                                ResourceManager.Network.NetworkUploadSensorList.Add(sensor.Name);
+                            }
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                            {
+                                ResourceManager.Network.NetworkDownloadSensorList.Add(sensor.Name);
+                            }
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+        #endregion
 
+        #region Events
+        private void NetworkSelected(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
                 if (ResourceManager.Network.NetworkHardware != null)
                 {
+                    ResourceManager.Network.NetworkUploadSensorList.Clear();
+                    ResourceManager.Network.NetworkDownloadSensorList.Clear();
+
                     foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Network.NetworkHardware))
                     {
                         if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
@@ -41,33 +76,15 @@ namespace ResourceMonitor.Views.Settings
                             ResourceManager.Network.NetworkDownloadSensorList.Add(sensor.Name);
                         }
                     }
+
+                    ResourceManager.Network.NetworkUploadSensor = null;
+                    ResourceManager.Network.NetworkDownloadSensor = null;
                 }
             }
-        }
-        #endregion
-
-        #region Events
-        private void NetworkSelected(object sender, SelectionChangedEventArgs e)
-        {
-            if (ResourceManager.Network.NetworkHardware != null)
+            catch (Exception ex)
             {
-                ResourceManager.Network.NetworkUploadSensorList.Clear();
-                ResourceManager.Network.NetworkDownloadSensorList.Clear();
-
-                foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Network.NetworkHardware))
-                {
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                    {
-                        ResourceManager.Network.NetworkUploadSensorList.Add(sensor.Name);
-                    }
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                    {
-                        ResourceManager.Network.NetworkDownloadSensorList.Add(sensor.Name);
-                    }
-                }
-
-                ResourceManager.Network.NetworkUploadSensor = null;
-                ResourceManager.Network.NetworkDownloadSensor = null;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 

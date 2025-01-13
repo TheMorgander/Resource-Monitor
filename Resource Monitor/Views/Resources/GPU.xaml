@@ -6,7 +6,7 @@
              mc:Ignorable="d">
     <Grid 
         Height="45" 
-        Width="50" 
+        Width="60" 
         HorizontalAlignment="Left">
         <StackPanel
             x:Name="GPUStackPanel"
