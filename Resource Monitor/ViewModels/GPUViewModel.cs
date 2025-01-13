@@ -1,8 +1,9 @@
 ﻿using LibreHardwareMonitor.Hardware;
+using PropertyChanged;
+using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
 using ResourceMonitor.ViewModels.Resources;
-using PropertyChanged;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels
@@ -52,30 +53,38 @@ namespace ResourceMonitor.ViewModels
         #region Public Methods
         public void Update()
         {
-            var gpuLoadSensor = HardwareManager.GetSensor(GPUHardware, GPULoadSensor, SensorType.Load);
-            var gpuTemperatureSensor = HardwareManager.GetSensor(GPUHardware, GPUTemperatureSensor, SensorType.Temperature);
+            try
+            {
+                var gpuLoadSensor = HardwareManager.GetSensor(GPUHardware, GPULoadSensor, SensorType.Load);
+                var gpuTemperatureSensor = HardwareManager.GetSensor(GPUHardware, GPUTemperatureSensor, SensorType.Temperature);
 
-            if (gpuLoadSensor != null && gpuLoadSensor.Value != null)
-            {
-                GPULoadValue = ((int)gpuLoadSensor.Value).ToString();
-                GPULoadSuffix = "%";
-            }
-            else
-            {
-                GPULoadValue = "--";
-                GPULoadSuffix = "%";
-            }
+                if (gpuLoadSensor != null && gpuLoadSensor.Value != null)
+                {
+                    GPULoadValue = RoundingConverter.RoundGPULoadValue((double)gpuLoadSensor.Value);
+                    GPULoadSuffix = "%";
+                }
+                else
+                {
+                    GPULoadValue = "--";
+                    GPULoadSuffix = "%";
+                }
 
-            if (gpuTemperatureSensor != null && gpuTemperatureSensor.Value != null)
-            {
-                GPUTemperatureValue = ((int)gpuTemperatureSensor.Value).ToString();
-                GPUTemperatureSuffix = "°C";
+                if (gpuTemperatureSensor != null && gpuTemperatureSensor.Value != null)
+                {
+                    GPUTemperatureValue = RoundingConverter.RoundGPUTempValue((double)gpuTemperatureSensor.Value);
+                    GPUTemperatureSuffix = "°C";
+                }
+                else
+                {
+                    GPUTemperatureValue = "--";
+                    GPUTemperatureSuffix = "°C";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                GPUTemperatureValue = "--";
-                GPUTemperatureSuffix = "°C";
-            }   
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         #endregion
     }

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace ResourceMonitor.Models
 {
@@ -62,12 +61,15 @@ namespace ResourceMonitor.Models
                 {
                     while (true)
                     {
-                        HardwareManager.Update();
-
                         foreach (IResource resource in resources)
                         {
                             resource.Update();
                         }
+
+                        Task.Run(() =>
+                        { 
+                            HardwareManager.Update(); 
+                        });
 
                         Thread.Sleep(Math.Max(General.GeneralRefreshFrequency, 100));
                     }
@@ -80,7 +82,6 @@ namespace ResourceMonitor.Models
 
                 Start();
             }
-
         }
         #endregion
     }

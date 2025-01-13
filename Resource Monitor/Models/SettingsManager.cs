@@ -3,7 +3,6 @@ using ResourceMonitor.ViewModels;
 using ResourceMonitor.ViewModels.Resources.CPU;
 using System;
 using System.IO;
-using System.Windows;
 
 namespace ResourceMonitor.Models
 {
@@ -51,13 +50,21 @@ namespace ResourceMonitor.Models
         #region Public Methods
         public void Initialize()
         {
-            if (!File.Exists("settings.json"))
+            try
             {
-                string settings = JsonConvert.SerializeObject(new Settings());
-                File.WriteAllText("settings.json", settings);
-            }
+                if (!File.Exists("settings.json"))
+                {
+                    string settings = JsonConvert.SerializeObject(new Settings());
+                    File.WriteAllText("settings.json", settings);
+                }
 
-            ReadSettings();
+                ReadSettings();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         public void ReadSettings()
@@ -98,7 +105,6 @@ namespace ResourceMonitor.Models
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                Environment.Exit(-1);
             }
         }
 

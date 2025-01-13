@@ -1,5 +1,6 @@
 ﻿using ResourceMonitor.Models;
-using System.Threading;
+using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,44 +17,71 @@ namespace ResourceMonitor
         #region Constructor
         public MainWindow()
         {
-            InitializeComponent();
-
-            SettingsManager.Initialize();
-            HardwareManager.Open();
-            ResourceManager.Start();
-
-            if (SystemParameters.IsRemoteSession == false) 
+            try
             {
-                Left = (SystemParameters.PrimaryScreenWidth / 2) - (this.Width / 2);
-                Top = 0;
+                InitializeComponent();
+
+                Process p = Process.GetCurrentProcess();
+                p.PriorityClass = ProcessPriorityClass.RealTime;
+
+                SettingsManager.Initialize();
+                HardwareManager.Open();
+                ResourceManager.Start();
+
+                if (SystemParameters.IsRemoteSession == false)
+                {
+                    Left = (SystemParameters.PrimaryScreenWidth / 2) - (this.Width / 2);
+                    Top = 0;
+                }
+                else
+                {
+                    Left = (SystemParameters.VirtualScreenWidth / 2) - (this.Width / 2);
+                    Top = 0;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Left = (SystemParameters.VirtualScreenWidth / 2) - (this.Width / 2);
-                Top = 0;
-            }          
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         #endregion
 
         #region Events
         private void OnDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            SettingsWindow SettingsWindow = new SettingsWindow();
-            SettingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            SettingsWindow.Show();
+            try
+            {
+                SettingsWindow SettingsWindow = new SettingsWindow();
+                SettingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                SettingsWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         private void OnRightClick(object sender, MouseButtonEventArgs e)
         {
-            if (SystemParameters.IsRemoteSession == false)
+            try
             {
-                if (Top == 0) Top = (SystemParameters.PrimaryScreenHeight - this.Height);
-                else Top = 0;
+                if (SystemParameters.IsRemoteSession == false)
+                {
+                    if (Top == 0) Top = (SystemParameters.PrimaryScreenHeight - this.Height);
+                    else Top = 0;
+                }
+                else
+                {
+                    if (Top == 0) Top = (SystemParameters.VirtualScreenHeight - this.Height);
+                    else Top = 0;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                if (Top == 0) Top = (SystemParameters.VirtualScreenHeight - this.Height);
-                else Top = 0;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
         #endregion

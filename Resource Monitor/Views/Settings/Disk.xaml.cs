@@ -1,4 +1,5 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows.Controls;
 
 namespace ResourceMonitor.Views.Settings
@@ -14,22 +15,56 @@ namespace ResourceMonitor.Views.Settings
         #region Constructors
         public Disk()
         {
-            InitializeComponent();
-
-            DataContext = ResourceManager.Disk;
-
-            if (ResourceManager.Disk.DiskHardwareList.Count == 0)
+            try
             {
-                foreach (var hardware in HardwareManager.GetHardwareList())
+                InitializeComponent();
+
+                DataContext = ResourceManager.Disk;
+
+                if (ResourceManager.Disk.DiskHardwareList.Count == 0)
                 {
-                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Storage)
+                    foreach (var hardware in HardwareManager.GetHardwareList())
                     {
-                        ResourceManager.Disk.DiskHardwareList.Add(hardware.Name);
+                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Storage)
+                        {
+                            ResourceManager.Disk.DiskHardwareList.Add(hardware.Name);
+                        }
+                    }
+
+                    if (ResourceManager.Disk.DiskHardware != null)
+                    {
+                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Disk.DiskHardware))
+                        {
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                            {
+                                ResourceManager.Disk.DiskReadSensorList.Add(sensor.Name);
+                            }
+                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                            {
+                                ResourceManager.Disk.DiskWriteSensorList.Add(sensor.Name);
+                            }
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+        #endregion
 
+        #region Events
+        private void DiskSelected(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
                 if (ResourceManager.Disk.DiskHardware != null)
                 {
+                    ResourceManager.Disk.DiskReadSensorList.Clear();
+                    ResourceManager.Disk.DiskWriteSensorList.Clear();
+
                     foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Disk.DiskHardware))
                     {
                         if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
@@ -41,33 +76,15 @@ namespace ResourceMonitor.Views.Settings
                             ResourceManager.Disk.DiskWriteSensorList.Add(sensor.Name);
                         }
                     }
+
+                    ResourceManager.Disk.DiskReadSensor = null;
+                    ResourceManager.Disk.DiskWriteSensor = null;
                 }
             }
-        }
-        #endregion
-
-        #region Events
-        private void DiskSelected(object sender, SelectionChangedEventArgs e)
-        {
-            if (ResourceManager.Disk.DiskHardware != null)
+            catch (Exception ex)
             {
-                ResourceManager.Disk.DiskReadSensorList.Clear();
-                ResourceManager.Disk.DiskWriteSensorList.Clear();
-
-                foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Disk.DiskHardware))
-                {
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                    {
-                        ResourceManager.Disk.DiskReadSensorList.Add(sensor.Name);
-                    }
-                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                    {
-                        ResourceManager.Disk.DiskWriteSensorList.Add(sensor.Name);
-                    }
-                }
-
-                ResourceManager.Disk.DiskReadSensor = null;
-                ResourceManager.Disk.DiskWriteSensor = null;
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 

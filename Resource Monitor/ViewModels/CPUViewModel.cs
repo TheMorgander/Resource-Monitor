@@ -1,6 +1,8 @@
 ﻿using LibreHardwareMonitor.Hardware;
 using PropertyChanged;
+using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
+using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels.Resources.CPU
@@ -50,30 +52,38 @@ namespace ResourceMonitor.ViewModels.Resources.CPU
         #region Public Methods
         public void Update()
         {
-            var cpuLoadSensor = HardwareManager.GetSensor(CPUHardware, CPULoadSensor, SensorType.Load);
-            var cpuTemperatureSensor = HardwareManager.GetSensor(CPUHardware, CPUTemperatureSensor, SensorType.Temperature);
+            try
+            {
+                var cpuLoadSensor = HardwareManager.GetSensor(CPUHardware, CPULoadSensor, SensorType.Load);
+                var cpuTemperatureSensor = HardwareManager.GetSensor(CPUHardware, CPUTemperatureSensor, SensorType.Temperature);
 
-            if (cpuLoadSensor != null && cpuLoadSensor.Value != null)
-            { 
-                CPULoadValue = ((int)cpuLoadSensor.Value).ToString();
-                CPULoadSuffix = "%";
-            }
-            else
-            {
-                CPULoadValue = "--";
-                CPULoadSuffix = "%";
-            }
+                if (cpuLoadSensor != null && cpuLoadSensor.Value != null)
+                {
+                    CPULoadValue = RoundingConverter.RoundCPULoadValue((double)cpuLoadSensor.Value);
+                    CPULoadSuffix = "%";
+                }
+                else
+                {
+                    CPULoadValue = "--";
+                    CPULoadSuffix = "%";
+                }
 
-            if (cpuTemperatureSensor != null && cpuTemperatureSensor.Value != null)
-            {
-                CPUTemperatureValue = ((int)cpuTemperatureSensor.Value).ToString();
-                CPUTemperatureSuffix = "°C";
+                if (cpuTemperatureSensor != null && cpuTemperatureSensor.Value != null)
+                {
+                    CPUTemperatureValue = RoundingConverter.RoundCPUTempValue((double)cpuTemperatureSensor.Value);
+                    CPUTemperatureSuffix = "°C";
+                }
+                else
+                {
+                    CPUTemperatureValue = "--";
+                    CPUTemperatureSuffix = "°C";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                CPUTemperatureValue = "--";
-                CPUTemperatureSuffix = "°C";
-            } 
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         #endregion
     }

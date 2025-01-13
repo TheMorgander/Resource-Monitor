@@ -1,8 +1,9 @@
 ﻿using LibreHardwareMonitor.Hardware;
+using PropertyChanged;
+using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
 using ResourceMonitor.ViewModels.Resources;
-using PropertyChanged;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels
@@ -44,18 +45,26 @@ namespace ResourceMonitor.ViewModels
         #region Public Methods
         public void Update()
         {
-            var ramLoadSensor = HardwareManager.GetSensor(RAMHardware, RAMLoadSensor, SensorType.Load);
+            try
+            {
+                var ramLoadSensor = HardwareManager.GetSensor(RAMHardware, RAMLoadSensor, SensorType.Load);
 
-            if (ramLoadSensor != null && ramLoadSensor.Value != null)
-            {
-                RAMLoadValue = ((int)ramLoadSensor.Value).ToString();
-                RAMLoadSuffix = "%";
+                if (ramLoadSensor != null && ramLoadSensor.Value != null)
+                {
+                    RAMLoadValue = RoundingConverter.RoundRamLoadValue((double)ramLoadSensor.Value);
+                    RAMLoadSuffix = "%";
+                }
+                else
+                {
+                    RAMLoadValue = "--";
+                    RAMLoadSuffix = "%";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                RAMLoadValue = "--";
-                RAMLoadSuffix = "%";
-            }     
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
         #endregion
     }

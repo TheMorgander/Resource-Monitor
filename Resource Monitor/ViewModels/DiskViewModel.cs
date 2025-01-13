@@ -1,9 +1,9 @@
 ﻿using LibreHardwareMonitor.Hardware;
+using PropertyChanged;
 using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
 using ResourceMonitor.ViewModels.Resources;
-using PropertyChanged;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels
@@ -53,30 +53,38 @@ namespace ResourceMonitor.ViewModels
         #region Public Methods
         public void Update()
         {
-            var diskReadSensor = HardwareManager.GetSensor(DiskHardware, DiskReadSensor, SensorType.Throughput);
-            var diskWriteSensor = HardwareManager.GetSensor(DiskHardware, DiskWriteSensor, SensorType.Throughput);
+            try
+            {
+                var diskReadSensor = HardwareManager.GetSensor(DiskHardware, DiskReadSensor, SensorType.Throughput);
+                var diskWriteSensor = HardwareManager.GetSensor(DiskHardware, DiskWriteSensor, SensorType.Throughput);
 
-            if (diskReadSensor != null && diskReadSensor.Value != null) 
-            { 
-                DiskReadValue = ThroughputConverter.ConvertValue((long)diskReadSensor.Value).ToString();
-                DiskReadSuffix = ThroughputConverter.ConvertSuffix((long)diskReadSensor.Value);
-            }
-            else
-            {
-                DiskReadValue = "--";
-                DiskReadSuffix = "B/s";
-            }
+                if (diskReadSensor != null && diskReadSensor.Value != null)
+                {
+                    DiskReadValue = RoundingConverter.RoundDiskReadValue(ThroughputConverter.ConvertValue((long)diskReadSensor.Value));
+                    DiskReadSuffix = ThroughputConverter.ConvertSuffix((long)diskReadSensor.Value);
+                }
+                else
+                {
+                    DiskReadValue = "--";
+                    DiskReadSuffix = "B/s";
+                }
 
-            if (diskWriteSensor != null && diskWriteSensor.Value != null)
-            {
-                DiskWriteValue = ThroughputConverter.ConvertValue((long)diskWriteSensor.Value).ToString();
-                DiskWriteSuffix = ThroughputConverter.ConvertSuffix((long)diskWriteSensor.Value);
+                if (diskWriteSensor != null && diskWriteSensor.Value != null)
+                {
+                    DiskWriteValue = RoundingConverter.RoundDiskWriteValue(ThroughputConverter.ConvertValue((long)diskWriteSensor.Value));
+                    DiskWriteSuffix = ThroughputConverter.ConvertSuffix((long)diskWriteSensor.Value);
+                }
+                else
+                {
+                    DiskWriteValue = "--";
+                    DiskWriteSuffix = "B/s";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                DiskWriteValue = "--";
-                DiskWriteSuffix = "B/s";
-            }
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }   
         }
         #endregion
     }
