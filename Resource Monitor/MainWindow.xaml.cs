@@ -75,12 +75,12 @@ namespace ResourceMonitor
 
                 if (SystemParameters.IsRemoteSession == false)
                 {
-                    if (Top == 0) Top = (SystemParameters.PrimaryScreenHeight - this.Height);
+                    if (Top == 0) Top = (SystemParameters.WorkArea.Height - this.Height);
                     else Top = 0;
                 }
                 else
                 {
-                    if (Top == 0) Top = (SystemParameters.VirtualScreenHeight - this.Height);
+                    if (Top == 0) Top = (SystemParameters.WorkArea.Height - this.Height);
                     else Top = 0;
                 }
             }

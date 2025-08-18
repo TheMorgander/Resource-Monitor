@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Resource Monitor" 
         Height="33" 
-        Width="140"
+        Width="130"
         ShowInTaskbar="False"
         WindowStyle="None"
         Topmost="True"
@@ -36,7 +36,7 @@
         <StackPanel 
             Orientation="Horizontal">
             <local:Network 
-                Margin="0,0,10,0">
+                Margin="0,0,0,0">
             </local:Network>
         </StackPanel>
     </Grid>
