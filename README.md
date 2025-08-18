@@ -2,7 +2,7 @@
 ## Overview
 This is a C# WPF Application that creates an overlay at the top of the screen showing system resource usage.
 
-##Resource Monitor
+### Resource Monitor
 Resources include:
 
 * CPU Usage/Temperature
@@ -11,7 +11,7 @@ Resources include:
 * Disk Read/Write Rate
 * Network Upload/Download Rate
 
-##Network Monitor
+### Network Monitor
 Resources include:
 
 * Network Upload/Download Rate
