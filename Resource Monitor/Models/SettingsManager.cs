@@ -52,10 +52,10 @@ namespace ResourceMonitor.Models
         {
             try
             {
-                if (!File.Exists("settings.json"))
+                if (!File.Exists("resource monitor settings.json"))
                 {
                     string settings = JsonConvert.SerializeObject(new Settings());
-                    File.WriteAllText("settings.json", settings);
+                    File.WriteAllText("resource monitor settings.json", settings);
                 }
 
                 ReadSettings();
@@ -71,7 +71,7 @@ namespace ResourceMonitor.Models
         {
             try
             {
-                string settingsString = File.ReadAllText("settings.json");
+                string settingsString = File.ReadAllText("resource monitor settings.json");
                 Settings settingsClass = JsonConvert.DeserializeObject<Settings>(settingsString);
 
                 var general = GeneralViewModel.GetInstance();
@@ -142,7 +142,7 @@ namespace ResourceMonitor.Models
                 settingsClass.NetworkDownloadSensor = network.NetworkDownloadSensor;
 
                 string settingsString = JsonConvert.SerializeObject(settingsClass);
-                File.WriteAllText("settings.json", settingsString);
+                File.WriteAllText("resource monitor settings.json", settingsString);
             }
             catch (Exception ex)
             {

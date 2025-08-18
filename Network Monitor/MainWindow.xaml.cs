@@ -1,10 +1,10 @@
-﻿using ResourceMonitor.Models;
+﻿using NetworkMonitor.Models;
 using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ResourceMonitor
+namespace NetworkMonitor
 {
     public partial class MainWindow : Window
     {
