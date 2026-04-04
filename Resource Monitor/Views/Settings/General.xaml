@@ -5,28 +5,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d">
     <Grid>
-        <StackPanel 
+        <StackPanel
             x:Name="GeneralStackPanel"
             Orientation="Vertical">
-            <TextBlock 
+            <TextBlock
                 x:Name="GeneraTextBlock"
-                Text="General Settings" 
-                FontSize="16" 
-                FontWeight="Bold" 
-                TextAlignment="Center" 
-                Background="LightGray" 
+                Text="General Settings"
+                FontSize="16"
+                FontWeight="Bold"
+                TextAlignment="Center"
+                Background="LightGray"
                 Margin="2">
             </TextBlock>
-            <StackPanel 
+
+            <StackPanel
                 x:Name="GeneralRefreshFrequencyStackPanel"
                 Orientation="Horizontal">
                 <TextBlock
                     x:Name="GeneralRefreshFrequencyTextBlock"
                     Text="Refresh Frequency"
-                    Width="125" 
+                    Width="125"
                     Margin="2">
                 </TextBlock>
-                <TextBox 
+                <TextBox
                     x:Name="GeneralRefreshFrequencyTextBox"
                     Text="{Binding GeneralRefreshFrequency}"
                     Width="75"
@@ -34,6 +35,13 @@
                     Margin="2">
                 </TextBox>
             </StackPanel>
+
+            <CheckBox
+                x:Name="NetworkOnlyModeCheckBox"
+                Content="Network only mode"
+                IsChecked="{Binding NetworkOnlyMode}"
+                Margin="2">
+            </CheckBox>
         </StackPanel>
     </Grid>
 </UserControl>

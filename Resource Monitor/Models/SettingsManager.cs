@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using ResourceMonitor.ViewModels;
-using System;
 using System.IO;
 
 namespace ResourceMonitor.Models
@@ -31,6 +30,8 @@ namespace ResourceMonitor.Models
         {
             public int RefreshFrequency { get; set; }
 
+            public bool NetworkOnlyMode { get; set; }
+
             public string CPUHardware { get; set; }
             public string CPULoadSensor { get; set; }
             public string CPUTemperatureSensor { get; set; }
@@ -59,6 +60,8 @@ namespace ResourceMonitor.Models
             {
                 Settings defaultSettings = new Settings();
                 defaultSettings.RefreshFrequency = DefaultRefreshFrequency;
+                defaultSettings.NetworkOnlyMode = false;
+
                 string settings = JsonConvert.SerializeObject(defaultSettings);
                 File.WriteAllText(SettingsFileName, settings);
             }
@@ -78,6 +81,7 @@ namespace ResourceMonitor.Models
 
             var general = GeneralViewModel.GetInstance();
             general.GeneralRefreshFrequency = settingsClass.RefreshFrequency;
+            general.NetworkOnlyMode = settingsClass.NetworkOnlyMode;
 
             var cpu = CPUViewModel.GetInstance();
             cpu.CPUHardware = settingsClass.CPUHardware;
@@ -110,6 +114,7 @@ namespace ResourceMonitor.Models
 
             var general = GeneralViewModel.GetInstance();
             settingsClass.RefreshFrequency = general.GeneralRefreshFrequency;
+            settingsClass.NetworkOnlyMode = general.NetworkOnlyMode;
 
             if (settingsClass.RefreshFrequency < 100)
             {

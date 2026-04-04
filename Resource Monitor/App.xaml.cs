@@ -1,6 +1,7 @@
 ﻿using ResourceMonitor.Models;
 using System;
 using System.Diagnostics;
+using System.Security.Principal;
 using System.Windows;
 
 namespace ResourceMonitor
@@ -20,6 +21,18 @@ namespace ResourceMonitor
 
             try
             {
+                if (IsRunningAsAdministrator() == false)
+                {
+                    MessageBox.Show(
+                        "Resource Monitor must be run as Administrator.",
+                        "Resource Monitor",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+
+                    Shutdown();
+                    return;
+                }
+
                 Process process = Process.GetCurrentProcess();
                 process.PriorityClass = ProcessPriorityClass.RealTime;
 
@@ -48,6 +61,14 @@ namespace ResourceMonitor
             hardwareScanner.Close();
 
             base.OnExit(e);
+        }
+
+        private bool IsRunningAsAdministrator()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
     }
 }

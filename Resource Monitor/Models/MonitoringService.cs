@@ -56,11 +56,19 @@ namespace ResourceMonitor.Models
             }
 
             resources.Clear();
-            resources.Add(CPU);
-            resources.Add(GPU);
-            resources.Add(RAM);
-            resources.Add(Disk);
-            resources.Add(Network);
+
+            if (General.NetworkOnlyMode)
+            {
+                resources.Add(Network);
+            }
+            else
+            {
+                resources.Add(CPU);
+                resources.Add(GPU);
+                resources.Add(RAM);
+                resources.Add(Disk);
+                resources.Add(Network);
+            }
 
             cancellationTokenSource = new CancellationTokenSource();
             updateTask = Task.Run(() => UpdateLoop(cancellationTokenSource.Token));
