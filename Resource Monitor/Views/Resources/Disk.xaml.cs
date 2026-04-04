@@ -7,25 +7,15 @@ namespace ResourceMonitor.Views.Resources
     public partial class Disk : UserControl
     {
         #region Fields
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
+        private MonitoringService monitoringService = MonitoringService.GetInstance();
         #endregion
 
         #region Constructors
         public Disk()
         {
-            try
-            {
-                InitializeComponent();
+            InitializeComponent();
 
-                DataContext = ResourceManager.Disk;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
+            DataContext = monitoringService.Disk;
         }
         #endregion
     }

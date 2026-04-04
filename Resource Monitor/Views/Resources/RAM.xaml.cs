@@ -7,25 +7,15 @@ namespace ResourceMonitor.Views.Resources
     public partial class RAM : UserControl
     {
         #region Fields
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
+        private MonitoringService monitoringService = MonitoringService.GetInstance();
         #endregion
 
         #region Constructors
         public RAM()
         {
-            try
-            {
-                InitializeComponent();
+            InitializeComponent();
 
-                DataContext = ResourceManager.RAM;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
+            DataContext = monitoringService.RAM;
         }
         #endregion
     }

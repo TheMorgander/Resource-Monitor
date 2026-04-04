@@ -2,17 +2,17 @@
 using PropertyChanged;
 using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
-using ResourceMonitor.ViewModels.Resources;
 using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class GPUViewModel :IResource
+    public class GPUViewModel : IResourceViewModel
     {
         #region Instance
         private static GPUViewModel instance = null;
+
         public static GPUViewModel GetInstance()
         {
             if (instance == null)
@@ -25,7 +25,12 @@ namespace ResourceMonitor.ViewModels
         #endregion
 
         #region Fields
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
+        private readonly HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
+
+        private string nextGPULoadValue = "--";
+        private string nextGPULoadSuffix = "%";
+        private string nextGPUTemperatureValue = "--";
+        private string nextGPUTemperatureSuffix = "°C";
         #endregion
 
         #region Properties
@@ -51,40 +56,44 @@ namespace ResourceMonitor.ViewModels
         #endregion
 
         #region Public Methods
-        public void Update()
+        public void Refresh()
         {
-            try
-            {
-                var gpuLoadSensor = HardwareManager.GetSensor(GPUHardware, GPULoadSensor, SensorType.Load);
-                var gpuTemperatureSensor = HardwareManager.GetSensor(GPUHardware, GPUTemperatureSensor, SensorType.Temperature);
+            string selectedHardware = GPUHardware;
+            string selectedLoadSensor = GPULoadSensor;
+            string selectedTemperatureSensor = GPUTemperatureSensor;
 
-                if (gpuLoadSensor != null && gpuLoadSensor.Value != null)
-                {
-                    GPULoadValue = RoundingConverter.RoundGPULoadValue((double)gpuLoadSensor.Value);
-                    GPULoadSuffix = "%";
-                }
-                else
-                {
-                    GPULoadValue = "--";
-                    GPULoadSuffix = "%";
-                }
+            ISensor gpuLoadSensor = hardwareScanner.GetSensor(selectedHardware, selectedLoadSensor, SensorType.Load);
+            ISensor gpuTemperatureSensor = hardwareScanner.GetSensor(selectedHardware, selectedTemperatureSensor, SensorType.Temperature);
 
-                if (gpuTemperatureSensor != null && gpuTemperatureSensor.Value != null)
-                {
-                    GPUTemperatureValue = RoundingConverter.RoundGPUTempValue((double)gpuTemperatureSensor.Value);
-                    GPUTemperatureSuffix = "°C";
-                }
-                else
-                {
-                    GPUTemperatureValue = "--";
-                    GPUTemperatureSuffix = "°C";
-                }
-            }
-            catch (Exception ex)
+            if (gpuLoadSensor != null && gpuLoadSensor.Value != null)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                nextGPULoadValue = RoundingConverter.RoundGPULoadValue((double)gpuLoadSensor.Value);
+                nextGPULoadSuffix = "%";
             }
+            else
+            {
+                nextGPULoadValue = "--";
+                nextGPULoadSuffix = "%";
+            }
+
+            if (gpuTemperatureSensor != null && gpuTemperatureSensor.Value != null)
+            {
+                nextGPUTemperatureValue = RoundingConverter.RoundGPUTempValue((double)gpuTemperatureSensor.Value);
+                nextGPUTemperatureSuffix = "°C";
+            }
+            else
+            {
+                nextGPUTemperatureValue = "--";
+                nextGPUTemperatureSuffix = "°C";
+            }
+        }
+
+        public void Apply()
+        {
+            GPULoadValue = nextGPULoadValue;
+            GPULoadSuffix = nextGPULoadSuffix;
+            GPUTemperatureValue = nextGPUTemperatureValue;
+            GPUTemperatureSuffix = nextGPUTemperatureSuffix;
         }
         #endregion
     }

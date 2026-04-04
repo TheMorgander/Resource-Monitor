@@ -5,13 +5,14 @@ using ResourceMonitor.Models;
 using System;
 using System.Collections.ObjectModel;
 
-namespace ResourceMonitor.ViewModels.Resources.CPU
+namespace ResourceMonitor.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class CPUViewModel : IResource
+    public class CPUViewModel : IResourceViewModel
     {
         #region Instance
         private static CPUViewModel instance = null;
+
         public static CPUViewModel GetInstance()
         {
             if (instance == null)
@@ -24,7 +25,12 @@ namespace ResourceMonitor.ViewModels.Resources.CPU
         #endregion
 
         #region Fields
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
+        private readonly HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
+
+        private string nextCPULoadValue = "--";
+        private string nextCPULoadSuffix = "%";
+        private string nextCPUTemperatureValue = "--";
+        private string nextCPUTemperatureSuffix = "°C";
         #endregion
 
         #region Properties
@@ -46,44 +52,48 @@ namespace ResourceMonitor.ViewModels.Resources.CPU
 
         public string CPUTemperatureValue { get; set; }
 
-        public string CPUTemperatureSuffix { get; set;}
+        public string CPUTemperatureSuffix { get; set; }
         #endregion
 
         #region Public Methods
-        public void Update()
+        public void Refresh()
         {
-            try
-            {
-                var cpuLoadSensor = HardwareManager.GetSensor(CPUHardware, CPULoadSensor, SensorType.Load);
-                var cpuTemperatureSensor = HardwareManager.GetSensor(CPUHardware, CPUTemperatureSensor, SensorType.Temperature);
+            string selectedHardware = CPUHardware;
+            string selectedLoadSensor = CPULoadSensor;
+            string selectedTemperatureSensor = CPUTemperatureSensor;
 
-                if (cpuLoadSensor != null && cpuLoadSensor.Value != null)
-                {
-                    CPULoadValue = RoundingConverter.RoundCPULoadValue((double)cpuLoadSensor.Value);
-                    CPULoadSuffix = "%";
-                }
-                else
-                {
-                    CPULoadValue = "--";
-                    CPULoadSuffix = "%";
-                }
+            ISensor cpuLoadSensor = hardwareScanner.GetSensor(selectedHardware, selectedLoadSensor, SensorType.Load);
+            ISensor cpuTemperatureSensor = hardwareScanner.GetSensor(selectedHardware, selectedTemperatureSensor, SensorType.Temperature);
 
-                if (cpuTemperatureSensor != null && cpuTemperatureSensor.Value != null)
-                {
-                    CPUTemperatureValue = RoundingConverter.RoundCPUTempValue((double)cpuTemperatureSensor.Value);
-                    CPUTemperatureSuffix = "°C";
-                }
-                else
-                {
-                    CPUTemperatureValue = "--";
-                    CPUTemperatureSuffix = "°C";
-                }
-            }
-            catch (Exception ex)
+            if (cpuLoadSensor != null && cpuLoadSensor.Value != null)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                nextCPULoadValue = RoundingConverter.RoundCPULoadValue((double)cpuLoadSensor.Value);
+                nextCPULoadSuffix = "%";
             }
+            else
+            {
+                nextCPULoadValue = "--";
+                nextCPULoadSuffix = "%";
+            }
+
+            if (cpuTemperatureSensor != null && cpuTemperatureSensor.Value != null)
+            {
+                nextCPUTemperatureValue = RoundingConverter.RoundCPUTempValue((double)cpuTemperatureSensor.Value);
+                nextCPUTemperatureSuffix = "°C";
+            }
+            else
+            {
+                nextCPUTemperatureValue = "--";
+                nextCPUTemperatureSuffix = "°C";
+            }
+        }
+
+        public void Apply()
+        {
+            CPULoadValue = nextCPULoadValue;
+            CPULoadSuffix = nextCPULoadSuffix;
+            CPUTemperatureValue = nextCPUTemperatureValue;
+            CPUTemperatureSuffix = nextCPUTemperatureSuffix;
         }
         #endregion
     }

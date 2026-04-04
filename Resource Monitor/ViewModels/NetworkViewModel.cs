@@ -2,17 +2,17 @@
 using PropertyChanged;
 using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
-using ResourceMonitor.ViewModels.Resources;
 using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class NetworkViewModel : IResource
+    public class NetworkViewModel : IResourceViewModel
     {
         #region Instance
         private static NetworkViewModel instance = null;
+
         public static NetworkViewModel GetInstance()
         {
             if (instance == null)
@@ -25,7 +25,12 @@ namespace ResourceMonitor.ViewModels
         #endregion
 
         #region Fields
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
+        private readonly HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
+
+        private string nextNetworkUploadValue = "--";
+        private string nextNetworkUploadSuffix = "B/s";
+        private string nextNetworkDownloadValue = "--";
+        private string nextNetworkDownloadSuffix = "B/s";
         #endregion
 
         #region Properties
@@ -50,41 +55,45 @@ namespace ResourceMonitor.ViewModels
         public string NetworkDownloadSuffix { get; set; }
         #endregion
 
-        #region Public Methods`
-        public void Update()
+        #region Public Methods
+        public void Refresh()
         {
-            try
-            {
-                var networkUploadSensor = HardwareManager.GetSensor(NetworkHardware, NetworkUploadSensor, SensorType.Throughput);
-                var networkDownloadSensor = HardwareManager.GetSensor(NetworkHardware, NetworkDownloadSensor, SensorType.Throughput);
+            string selectedHardware = NetworkHardware;
+            string selectedUploadSensor = NetworkUploadSensor;
+            string selectedDownloadSensor = NetworkDownloadSensor;
 
-                if (networkUploadSensor != null && networkUploadSensor.Value != null)
-                {
-                    NetworkUploadValue = RoundingConverter.RoundNetworkUploadValue(ThroughputConverter.ConvertValue((long)networkUploadSensor.Value));
-                    NetworkUploadSuffix = ThroughputConverter.ConvertSuffix((long)networkUploadSensor.Value);
-                }
-                else
-                {
-                    NetworkUploadValue = "--";
-                    NetworkUploadSuffix = "B/s";
-                }
+            ISensor networkUploadSensor = hardwareScanner.GetSensor(selectedHardware, selectedUploadSensor, SensorType.Throughput);
+            ISensor networkDownloadSensor = hardwareScanner.GetSensor(selectedHardware, selectedDownloadSensor, SensorType.Throughput);
 
-                if (networkDownloadSensor != null && networkDownloadSensor.Value != null)
-                {
-                    NetworkDownloadValue = RoundingConverter.RoundNetworkDownloadValue(ThroughputConverter.ConvertValue((long)networkDownloadSensor.Value));
-                    NetworkDownloadSuffix = ThroughputConverter.ConvertSuffix((long)networkDownloadSensor.Value);
-                }
-                else
-                {
-                    NetworkDownloadValue = "--";
-                    NetworkDownloadSuffix = "B/s";
-                }
-            }
-            catch (Exception ex)
+            if (networkUploadSensor != null && networkUploadSensor.Value != null)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                nextNetworkUploadValue = RoundingConverter.RoundNetworkUploadValue(ThroughputConverter.ConvertValue((long)networkUploadSensor.Value));
+                nextNetworkUploadSuffix = ThroughputConverter.ConvertSuffix((long)networkUploadSensor.Value);
             }
+            else
+            {
+                nextNetworkUploadValue = "--";
+                nextNetworkUploadSuffix = "B/s";
+            }
+
+            if (networkDownloadSensor != null && networkDownloadSensor.Value != null)
+            {
+                nextNetworkDownloadValue = RoundingConverter.RoundNetworkDownloadValue(ThroughputConverter.ConvertValue((long)networkDownloadSensor.Value));
+                nextNetworkDownloadSuffix = ThroughputConverter.ConvertSuffix((long)networkDownloadSensor.Value);
+            }
+            else
+            {
+                nextNetworkDownloadValue = "--";
+                nextNetworkDownloadSuffix = "B/s";
+            }
+        }
+
+        public void Apply()
+        {
+            NetworkUploadValue = nextNetworkUploadValue;
+            NetworkUploadSuffix = nextNetworkUploadSuffix;
+            NetworkDownloadValue = nextNetworkDownloadValue;
+            NetworkDownloadSuffix = nextNetworkDownloadSuffix;
         }
         #endregion
     }

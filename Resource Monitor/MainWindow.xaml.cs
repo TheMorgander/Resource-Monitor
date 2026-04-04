@@ -1,6 +1,4 @@
-﻿using ResourceMonitor.Models;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -8,42 +6,30 @@ namespace ResourceMonitor
 {
     public partial class MainWindow : Window
     {
-        #region Fields
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        #endregion
-
         #region Constructor
         public MainWindow()
         {
-            try
+            InitializeComponent();
+            SetInitialWindowPosition();
+        }
+        #endregion
+
+        #region Private Methods
+        private void SetInitialWindowPosition()
+        {
+            double screenWidth;
+
+            if (SystemParameters.IsRemoteSession)
             {
-                InitializeComponent();
-
-                Process p = Process.GetCurrentProcess();
-                p.PriorityClass = ProcessPriorityClass.RealTime;
-
-                SettingsManager.Initialize();
-                HardwareManager.Open();
-                ResourceManager.Start();
-
-                if (SystemParameters.IsRemoteSession == false)
-                {
-                    Left = (SystemParameters.PrimaryScreenWidth / 2) - (this.Width / 2);
-                    Top = 0;
-                }
-                else
-                {
-                    Left = (SystemParameters.VirtualScreenWidth / 2) - (this.Width / 2);
-                    Top = 0;
-                }
+                screenWidth = SystemParameters.VirtualScreenWidth;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                screenWidth = SystemParameters.PrimaryScreenWidth;
             }
+
+            Left = (screenWidth / 2) - (Width / 2);
+            Top = 0;
         }
         #endregion
 
@@ -52,42 +38,35 @@ namespace ResourceMonitor
         {
             try
             {
-                SettingsWindow SettingsWindow = new SettingsWindow();
-                SettingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                SettingsWindow.Show();
+                SettingsWindow settingsWindow = new SettingsWindow();
+                settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                settingsWindow.Show();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                MessageBox.Show(
+                    "Could not open settings.\n\n" + ex.Message,
+                    "Resource Monitor",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void OnRightClick(object sender, MouseButtonEventArgs e)
         {
-            try
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
-                {
-                    Application.Current.Shutdown();
-                    return;
-                }
-
-                if (SystemParameters.IsRemoteSession == false)
-                {
-                    if (Top == 0) Top = (SystemParameters.WorkArea.Height - this.Height);
-                    else Top = 0;
-                }
-                else
-                {
-                    if (Top == 0) Top = (SystemParameters.WorkArea.Height - this.Height);
-                    else Top = 0;
-                }
+                Application.Current.Shutdown();
+                return;
             }
-            catch (Exception ex)
+
+            if (Top == 0)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                Top = SystemParameters.WorkArea.Height - Height;
+            }
+            else
+            {
+                Top = 0;
             }
         }
         #endregion

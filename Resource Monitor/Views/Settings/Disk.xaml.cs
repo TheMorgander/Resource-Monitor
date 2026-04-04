@@ -7,50 +7,41 @@ namespace ResourceMonitor.Views.Settings
     public partial class Disk : UserControl
     {
         #region Fields
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
+        private MonitoringService monitoringService = MonitoringService.GetInstance();
+        private HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
         #endregion
 
         #region Constructors
         public Disk()
         {
-            try
+            InitializeComponent();
+
+            DataContext = monitoringService.Disk;
+
+            if (monitoringService.Disk.DiskHardwareList.Count == 0)
             {
-                InitializeComponent();
-
-                DataContext = ResourceManager.Disk;
-
-                if (ResourceManager.Disk.DiskHardwareList.Count == 0)
+                foreach (var hardware in hardwareScanner.GetHardwareList())
                 {
-                    foreach (var hardware in HardwareManager.GetHardwareList())
+                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Storage)
                     {
-                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Storage)
-                        {
-                            ResourceManager.Disk.DiskHardwareList.Add(hardware.Name);
-                        }
+                        monitoringService.Disk.DiskHardwareList.Add(hardware.Name);
                     }
+                }
 
-                    if (ResourceManager.Disk.DiskHardware != null)
+                if (monitoringService.Disk.DiskHardware != null)
+                {
+                    foreach (var sensor in hardwareScanner.GetSensorList(monitoringService.Disk.DiskHardware))
                     {
-                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Disk.DiskHardware))
+                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
                         {
-                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                            {
-                                ResourceManager.Disk.DiskReadSensorList.Add(sensor.Name);
-                            }
-                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                            {
-                                ResourceManager.Disk.DiskWriteSensorList.Add(sensor.Name);
-                            }
+                            monitoringService.Disk.DiskReadSensorList.Add(sensor.Name);
+                        }
+                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                        {
+                            monitoringService.Disk.DiskWriteSensorList.Add(sensor.Name);
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
             }
         }
         #endregion
@@ -58,33 +49,25 @@ namespace ResourceMonitor.Views.Settings
         #region Events
         private void DiskSelected(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (monitoringService.Disk.DiskHardware != null)
             {
-                if (ResourceManager.Disk.DiskHardware != null)
+                monitoringService.Disk.DiskReadSensorList.Clear();
+                monitoringService.Disk.DiskWriteSensorList.Clear();
+
+                foreach (var sensor in hardwareScanner.GetSensorList(monitoringService.Disk.DiskHardware))
                 {
-                    ResourceManager.Disk.DiskReadSensorList.Clear();
-                    ResourceManager.Disk.DiskWriteSensorList.Clear();
-
-                    foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Disk.DiskHardware))
+                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
                     {
-                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                        {
-                            ResourceManager.Disk.DiskReadSensorList.Add(sensor.Name);
-                        }
-                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                        {
-                            ResourceManager.Disk.DiskWriteSensorList.Add(sensor.Name);
-                        }
+                        monitoringService.Disk.DiskReadSensorList.Add(sensor.Name);
                     }
-
-                    ResourceManager.Disk.DiskReadSensor = null;
-                    ResourceManager.Disk.DiskWriteSensor = null;
+                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                    {
+                        monitoringService.Disk.DiskWriteSensorList.Add(sensor.Name);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+
+                monitoringService.Disk.DiskReadSensor = null;
+                monitoringService.Disk.DiskWriteSensor = null;
             }
         }
 

@@ -7,9 +7,7 @@ namespace ResourceMonitor
     public partial class SettingsWindow : Window
     {
         #region Fields
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
+        private readonly SettingsManager settingsManager = SettingsManager.GetInstance();
         #endregion
 
         #region Constructors
@@ -19,30 +17,27 @@ namespace ResourceMonitor
         }
         #endregion
 
+        #region Events
         private void SaveButtonClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                SettingsManager.WriteSettings();
+                settingsManager.WriteSettings();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                MessageBox.Show(
+                    "Could not save settings.\n\n" + ex.Message,
+                    "Resource Monitor",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void ExitButtonClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Application.Current.Shutdown();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
+            Application.Current.Shutdown();
         }
+        #endregion
     }
 }

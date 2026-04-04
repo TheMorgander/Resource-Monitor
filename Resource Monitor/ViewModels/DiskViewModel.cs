@@ -2,17 +2,17 @@
 using PropertyChanged;
 using ResourceMonitor.Helpers;
 using ResourceMonitor.Models;
-using ResourceMonitor.ViewModels.Resources;
 using System;
 using System.Collections.ObjectModel;
 
 namespace ResourceMonitor.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class DiskViewModel : IResource
+    public class DiskViewModel : IResourceViewModel
     {
         #region Instance
         private static DiskViewModel instance = null;
+
         public static DiskViewModel GetInstance()
         {
             if (instance == null)
@@ -25,7 +25,12 @@ namespace ResourceMonitor.ViewModels
         #endregion
 
         #region Fields
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
+        private readonly HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
+
+        private string nextDiskReadValue = "--";
+        private string nextDiskReadSuffix = "B/s";
+        private string nextDiskWriteValue = "--";
+        private string nextDiskWriteSuffix = "B/s";
         #endregion
 
         #region Properties
@@ -51,40 +56,44 @@ namespace ResourceMonitor.ViewModels
         #endregion
 
         #region Public Methods
-        public void Update()
+        public void Refresh()
         {
-            try
+            string selectedHardware = DiskHardware;
+            string selectedReadSensor = DiskReadSensor;
+            string selectedWriteSensor = DiskWriteSensor;
+
+            ISensor diskReadSensor = hardwareScanner.GetSensor(selectedHardware, selectedReadSensor, SensorType.Throughput);
+            ISensor diskWriteSensor = hardwareScanner.GetSensor(selectedHardware, selectedWriteSensor, SensorType.Throughput);
+
+            if (diskReadSensor != null && diskReadSensor.Value != null)
             {
-                var diskReadSensor = HardwareManager.GetSensor(DiskHardware, DiskReadSensor, SensorType.Throughput);
-                var diskWriteSensor = HardwareManager.GetSensor(DiskHardware, DiskWriteSensor, SensorType.Throughput);
-
-                if (diskReadSensor != null && diskReadSensor.Value != null)
-                {
-                    DiskReadValue = RoundingConverter.RoundDiskReadValue(ThroughputConverter.ConvertValue((long)diskReadSensor.Value));
-                    DiskReadSuffix = ThroughputConverter.ConvertSuffix((long)diskReadSensor.Value);
-                }
-                else
-                {
-                    DiskReadValue = "--";
-                    DiskReadSuffix = "B/s";
-                }
-
-                if (diskWriteSensor != null && diskWriteSensor.Value != null)
-                {
-                    DiskWriteValue = RoundingConverter.RoundDiskWriteValue(ThroughputConverter.ConvertValue((long)diskWriteSensor.Value));
-                    DiskWriteSuffix = ThroughputConverter.ConvertSuffix((long)diskWriteSensor.Value);
-                }
-                else
-                {
-                    DiskWriteValue = "--";
-                    DiskWriteSuffix = "B/s";
-                }
+                nextDiskReadValue = RoundingConverter.RoundDiskReadValue(ThroughputConverter.ConvertValue((long)diskReadSensor.Value));
+                nextDiskReadSuffix = ThroughputConverter.ConvertSuffix((long)diskReadSensor.Value);
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }   
+                nextDiskReadValue = "--";
+                nextDiskReadSuffix = "B/s";
+            }
+
+            if (diskWriteSensor != null && diskWriteSensor.Value != null)
+            {
+                nextDiskWriteValue = RoundingConverter.RoundDiskWriteValue(ThroughputConverter.ConvertValue((long)diskWriteSensor.Value));
+                nextDiskWriteSuffix = ThroughputConverter.ConvertSuffix((long)diskWriteSensor.Value);
+            }
+            else
+            {
+                nextDiskWriteValue = "--";
+                nextDiskWriteSuffix = "B/s";
+            }
+        }
+
+        public void Apply()
+        {
+            DiskReadValue = nextDiskReadValue;
+            DiskReadSuffix = nextDiskReadSuffix;
+            DiskWriteValue = nextDiskWriteValue;
+            DiskWriteSuffix = nextDiskWriteSuffix;
         }
         #endregion
     }

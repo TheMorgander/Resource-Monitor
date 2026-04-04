@@ -7,46 +7,37 @@ namespace ResourceMonitor.Views.Settings
     public partial class RAM : UserControl
     {
         #region Fields
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
+        private MonitoringService monitoringService = MonitoringService.GetInstance();
+        private HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
         #endregion
 
         #region Constructors
         public RAM()
         {
-            try
+            InitializeComponent();
+
+            DataContext = monitoringService.RAM;
+
+            if (monitoringService.RAM.RAMHardwareList.Count == 0)
             {
-                InitializeComponent();
-
-                DataContext = ResourceManager.RAM;
-
-                if (ResourceManager.RAM.RAMHardwareList.Count == 0)
+                foreach (var hardware in hardwareScanner.GetHardwareList())
                 {
-                    foreach (var hardware in HardwareManager.GetHardwareList())
+                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Memory)
                     {
-                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Memory)
-                        {
-                            ResourceManager.RAM.RAMHardwareList.Add(hardware.Name);
-                        }
+                        monitoringService.RAM.RAMHardwareList.Add(hardware.Name);
                     }
+                }
 
-                    if (ResourceManager.RAM.RAMHardware != null)
+                if (monitoringService.RAM.RAMHardware != null)
+                {
+                    foreach (var sensor in hardwareScanner.GetSensorList(monitoringService.RAM.RAMHardware))
                     {
-                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.RAM.RAMHardware))
+                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
                         {
-                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
-                            {
-                                ResourceManager.RAM.RAMLoadSensorList.Add(sensor.Name);
-                            }
+                            monitoringService.RAM.RAMLoadSensorList.Add(sensor.Name);
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
             }
         }
         #endregion
@@ -54,27 +45,19 @@ namespace ResourceMonitor.Views.Settings
         #region Events
         private void RAMSelected(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (monitoringService.RAM.RAMHardware != null)
             {
-                if (ResourceManager.RAM.RAMHardware != null)
+                monitoringService.RAM.RAMLoadSensorList.Clear();
+
+                foreach (var sensor in hardwareScanner.GetSensorList(monitoringService.RAM.RAMHardware))
                 {
-                    ResourceManager.RAM.RAMLoadSensorList.Clear();
-
-                    foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.RAM.RAMHardware))
+                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
                     {
-                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Load)
-                        {
-                            ResourceManager.RAM.RAMLoadSensorList.Add(sensor.Name);
-                        }
+                        monitoringService.RAM.RAMLoadSensorList.Add(sensor.Name);
                     }
-
-                    ResourceManager.RAM.RAMLoadSensor = null;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+
+                monitoringService.RAM.RAMLoadSensor = null;
             }
         }
 

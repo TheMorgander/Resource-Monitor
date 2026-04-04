@@ -7,50 +7,41 @@ namespace ResourceMonitor.Views.Settings
     public partial class Network : UserControl
     {
         #region Fields
-        private ResourceManager ResourceManager = ResourceManager.GetInstance();
-        private HardwareManager HardwareManager = HardwareManager.GetInstance();
-        private SettingsManager SettingsManager = SettingsManager.GetInstance();
+        private MonitoringService monitoringService = MonitoringService.GetInstance();
+        private HardwareScanner hardwareScanner = HardwareScanner.GetInstance();
         #endregion
 
         #region Constructors
         public Network()
         {
-            try
+            InitializeComponent();
+
+            DataContext = monitoringService.Network;
+
+            if (monitoringService.Network.NetworkHardwareList.Count == 0)
             {
-                InitializeComponent();
-
-                DataContext = ResourceManager.Network;
-
-                if (ResourceManager.Network.NetworkHardwareList.Count == 0)
+                foreach (var hardware in hardwareScanner.GetHardwareList())
                 {
-                    foreach (var hardware in HardwareManager.GetHardwareList())
+                    if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Network)
                     {
-                        if (hardware.HardwareType == LibreHardwareMonitor.Hardware.HardwareType.Network)
-                        {
-                            ResourceManager.Network.NetworkHardwareList.Add(hardware.Name);
-                        }
+                        monitoringService.Network.NetworkHardwareList.Add(hardware.Name);
                     }
+                }
 
-                    if (ResourceManager.Network.NetworkHardware != null)
+                if (monitoringService.Network.NetworkHardware != null)
+                {
+                    foreach (var sensor in hardwareScanner.GetSensorList(monitoringService.Network.NetworkHardware))
                     {
-                        foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Network.NetworkHardware))
+                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
                         {
-                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                            {
-                                ResourceManager.Network.NetworkUploadSensorList.Add(sensor.Name);
-                            }
-                            if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                            {
-                                ResourceManager.Network.NetworkDownloadSensorList.Add(sensor.Name);
-                            }
+                            monitoringService.Network.NetworkUploadSensorList.Add(sensor.Name);
+                        }
+                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                        {
+                            monitoringService.Network.NetworkDownloadSensorList.Add(sensor.Name);
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
             }
         }
         #endregion
@@ -58,33 +49,25 @@ namespace ResourceMonitor.Views.Settings
         #region Events
         private void NetworkSelected(object sender, SelectionChangedEventArgs e)
         {
-            try
+            if (monitoringService.Network.NetworkHardware != null)
             {
-                if (ResourceManager.Network.NetworkHardware != null)
+                monitoringService.Network.NetworkUploadSensorList.Clear();
+                monitoringService.Network.NetworkDownloadSensorList.Clear();
+
+                foreach (var sensor in hardwareScanner.GetSensorList(monitoringService.Network.NetworkHardware))
                 {
-                    ResourceManager.Network.NetworkUploadSensorList.Clear();
-                    ResourceManager.Network.NetworkDownloadSensorList.Clear();
-
-                    foreach (var sensor in HardwareManager.GetSensorList(ResourceManager.Network.NetworkHardware))
+                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
                     {
-                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                        {
-                            ResourceManager.Network.NetworkUploadSensorList.Add(sensor.Name);
-                        }
-                        if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
-                        {
-                            ResourceManager.Network.NetworkDownloadSensorList.Add(sensor.Name);
-                        }
+                        monitoringService.Network.NetworkUploadSensorList.Add(sensor.Name);
                     }
-
-                    ResourceManager.Network.NetworkUploadSensor = null;
-                    ResourceManager.Network.NetworkDownloadSensor = null;
+                    if (sensor.SensorType == LibreHardwareMonitor.Hardware.SensorType.Throughput)
+                    {
+                        monitoringService.Network.NetworkDownloadSensorList.Add(sensor.Name);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+
+                monitoringService.Network.NetworkUploadSensor = null;
+                monitoringService.Network.NetworkDownloadSensor = null;
             }
         }
 

@@ -2,9 +2,9 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-	<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{13441160-6C30-4DAE-BA27-606843714F86}</ProjectGuid>
@@ -83,11 +83,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\IResource.cs" />
+    <Compile Include="ViewModels\IResourceViewModel.cs" />
     <Compile Include="Helpers\RoundingConverter.cs" />
     <Compile Include="Helpers\ThroughputConverter.cs" />
-    <Compile Include="Models\HardwareManager.cs" />
-    <Compile Include="Models\ResourceManager.cs" />
+    <Compile Include="Models\HardwareScanner.cs" />
+    <Compile Include="Models\MonitoringService.cs" />
     <Compile Include="Models\SettingsManager.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -244,10 +244,7 @@
     </PackageReference>
   </ItemGroup>
   <Target Name="CopyLibreHardwareMonitorRuntime" AfterTargets="Build">
-  <Copy
-    SourceFiles="$(PkgLibreHardwareMonitorLib)\runtimes\win-x64\lib\net472\LibreHardwareMonitorLib.dll"
-    DestinationFolder="$(OutDir)"
-    SkipUnchangedFiles="true" />
-</Target>
+    <Copy SourceFiles="$(PkgLibreHardwareMonitorLib)\runtimes\win-x64\lib\net472\LibreHardwareMonitorLib.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
