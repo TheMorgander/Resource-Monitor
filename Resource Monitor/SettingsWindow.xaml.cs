@@ -27,25 +27,28 @@ namespace ResourceMonitor
         #region Private Methods
         private void ApplySettingsVisibility()
         {
-            if (generalViewModel.NetworkOnlyMode)
+            switch (generalViewModel.DisplayMode)
             {
-                CPUSettingsControl.Visibility = Visibility.Collapsed;
-                GPUSettingsControl.Visibility = Visibility.Collapsed;
-                RAMSettingsControl.Visibility = Visibility.Collapsed;
-                DiskSettingsControl.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                CPUSettingsControl.Visibility = Visibility.Visible;
-                GPUSettingsControl.Visibility = Visibility.Visible;
-                RAMSettingsControl.Visibility = Visibility.Visible;
-                DiskSettingsControl.Visibility = Visibility.Visible;
+                case "Network":
+                    CPUSettingsControl.Visibility = Visibility.Collapsed;
+                    GPUSettingsControl.Visibility = Visibility.Collapsed;
+                    RAMSettingsControl.Visibility = Visibility.Collapsed;
+                    DiskSettingsControl.Visibility = Visibility.Collapsed;
+                    break;
+
+                case "Full":
+                default:
+                    CPUSettingsControl.Visibility = Visibility.Visible;
+                    GPUSettingsControl.Visibility = Visibility.Visible;
+                    RAMSettingsControl.Visibility = Visibility.Visible;
+                    DiskSettingsControl.Visibility = Visibility.Visible;
+                    break;
             }
         }
 
         private void GeneralViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(GeneralViewModel.NetworkOnlyMode))
+            if (e.PropertyName == nameof(GeneralViewModel.DisplayMode))
             {
                 ApplySettingsVisibility();
             }

@@ -57,17 +57,20 @@ namespace ResourceMonitor.Models
 
             resources.Clear();
 
-            if (General.NetworkOnlyMode)
+            switch (General.DisplayMode)
             {
-                resources.Add(Network);
-            }
-            else
-            {
-                resources.Add(CPU);
-                resources.Add(GPU);
-                resources.Add(RAM);
-                resources.Add(Disk);
-                resources.Add(Network);
+                case "Network":
+                    resources.Add(Network);
+                    break;
+
+                case "Full":
+                default:
+                    resources.Add(CPU);
+                    resources.Add(GPU);
+                    resources.Add(RAM);
+                    resources.Add(Disk);
+                    resources.Add(Network);
+                    break;
             }
 
             cancellationTokenSource = new CancellationTokenSource();

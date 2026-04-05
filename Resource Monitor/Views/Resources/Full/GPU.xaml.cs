@@ -2,20 +2,20 @@
 using System;
 using System.Windows.Controls;
 
-namespace ResourceMonitor.Views.Resources
+namespace ResourceMonitor.Views.Resources.Full
 {
-    public partial class CPU : UserControl
+    public partial class GPU : UserControl
     {
         #region Fields
         private MonitoringService monitoringService = MonitoringService.GetInstance();
         #endregion
 
         #region Constructors
-        public CPU()
+        public GPU()
         {
             InitializeComponent();
 
-            DataContext = monitoringService.CPU;
+            DataContext = monitoringService.GPU;
         }
         #endregion
     }

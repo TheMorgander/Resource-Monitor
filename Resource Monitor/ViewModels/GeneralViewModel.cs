@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace ResourceMonitor.ViewModels
@@ -21,7 +22,25 @@ namespace ResourceMonitor.ViewModels
 
         #region Fields
         private int generalRefreshFrequency;
-        private bool networkOnlyMode;
+        private string displayMode = "Full";
+        private string windowPosition = "Top";
+        #endregion
+
+        #region Constructor
+        private GeneralViewModel()
+        {
+            DisplayModeOptions = new ObservableCollection<string>
+            {
+                "Full",
+                "Network"
+            };
+
+            WindowPositionOptions = new ObservableCollection<string>
+            {
+                "Top",
+                "Bottom"
+            };
+        }
         #endregion
 
         #region Properties
@@ -41,21 +60,41 @@ namespace ResourceMonitor.ViewModels
             }
         }
 
-        public bool NetworkOnlyMode
+        public string DisplayMode
         {
             get
             {
-                return networkOnlyMode;
+                return displayMode;
             }
             set
             {
-                if (networkOnlyMode != value)
+                if (displayMode != value)
                 {
-                    networkOnlyMode = value;
+                    displayMode = value;
                     OnPropertyChanged();
                 }
             }
         }
+
+        public string WindowPosition
+        {
+            get
+            {
+                return windowPosition;
+            }
+            set
+            {
+                if (windowPosition != value)
+                {
+                    windowPosition = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<string> DisplayModeOptions { get; }
+
+        public ObservableCollection<string> WindowPositionOptions { get; }
         #endregion
 
         #region Events

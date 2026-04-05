@@ -32,6 +32,7 @@
                     Margin="10,5,10,5" />
 
                 <local:Network
+                    x:Name="NetworkSettingsControl"
                     Margin="10,5,10,5" />
 
                 <StackPanel

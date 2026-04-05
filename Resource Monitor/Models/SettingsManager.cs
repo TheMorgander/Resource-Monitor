@@ -22,6 +22,8 @@ namespace ResourceMonitor.Models
 
         #region Constants
         private const int DefaultRefreshFrequency = 1000;
+        private const string DefaultDisplayMode = "Full";
+        private const string DefaultWindowPosition = "Top";
         private const string SettingsFileName = "resource monitor settings.json";
         #endregion
 
@@ -30,7 +32,9 @@ namespace ResourceMonitor.Models
         {
             public int RefreshFrequency { get; set; }
 
-            public bool NetworkOnlyMode { get; set; }
+            public string DisplayMode { get; set; }
+
+            public string WindowPosition { get; set; }
 
             public string CPUHardware { get; set; }
             public string CPULoadSensor { get; set; }
@@ -60,7 +64,8 @@ namespace ResourceMonitor.Models
             {
                 Settings defaultSettings = new Settings();
                 defaultSettings.RefreshFrequency = DefaultRefreshFrequency;
-                defaultSettings.NetworkOnlyMode = false;
+                defaultSettings.DisplayMode = DefaultDisplayMode;
+                defaultSettings.WindowPosition = DefaultWindowPosition;
 
                 string settings = JsonConvert.SerializeObject(defaultSettings);
                 File.WriteAllText(SettingsFileName, settings);
@@ -79,9 +84,32 @@ namespace ResourceMonitor.Models
                 settingsClass.RefreshFrequency = DefaultRefreshFrequency;
             }
 
+            switch (settingsClass.DisplayMode)
+            {
+                case "Full":
+                case "Network":
+                    break;
+
+                default:
+                    settingsClass.DisplayMode = DefaultDisplayMode;
+                    break;
+            }
+
+            switch (settingsClass.WindowPosition)
+            {
+                case "Top":
+                case "Bottom":
+                    break;
+
+                default:
+                    settingsClass.WindowPosition = DefaultWindowPosition;
+                    break;
+            }
+
             var general = GeneralViewModel.GetInstance();
             general.GeneralRefreshFrequency = settingsClass.RefreshFrequency;
-            general.NetworkOnlyMode = settingsClass.NetworkOnlyMode;
+            general.DisplayMode = settingsClass.DisplayMode;
+            general.WindowPosition = settingsClass.WindowPosition;
 
             var cpu = CPUViewModel.GetInstance();
             cpu.CPUHardware = settingsClass.CPUHardware;
@@ -114,11 +142,34 @@ namespace ResourceMonitor.Models
 
             var general = GeneralViewModel.GetInstance();
             settingsClass.RefreshFrequency = general.GeneralRefreshFrequency;
-            settingsClass.NetworkOnlyMode = general.NetworkOnlyMode;
+            settingsClass.DisplayMode = general.DisplayMode;
+            settingsClass.WindowPosition = general.WindowPosition;
 
             if (settingsClass.RefreshFrequency < 100)
             {
                 settingsClass.RefreshFrequency = DefaultRefreshFrequency;
+            }
+
+            switch (settingsClass.DisplayMode)
+            {
+                case "Full":
+                case "Network":
+                    break;
+
+                default:
+                    settingsClass.DisplayMode = DefaultDisplayMode;
+                    break;
+            }
+
+            switch (settingsClass.WindowPosition)
+            {
+                case "Top":
+                case "Bottom":
+                    break;
+
+                default:
+                    settingsClass.WindowPosition = DefaultWindowPosition;
+                    break;
             }
 
             var cpu = CPUViewModel.GetInstance();

@@ -2,20 +2,20 @@
 using System;
 using System.Windows.Controls;
 
-namespace ResourceMonitor.Views.Resources
+namespace ResourceMonitor.Views.Resources.Full
 {
-    public partial class Disk : UserControl
+    public partial class RAM : UserControl
     {
         #region Fields
         private MonitoringService monitoringService = MonitoringService.GetInstance();
         #endregion
 
         #region Constructors
-        public Disk()
+        public RAM()
         {
             InitializeComponent();
 
-            DataContext = monitoringService.Disk;
+            DataContext = monitoringService.RAM;
         }
         #endregion
     }

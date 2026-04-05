@@ -1,4 +1,6 @@
-﻿using ResourceMonitor.ViewModels;
+﻿using ResourceMonitor.Models;
+using ResourceMonitor.ViewModels;
+using ResourceMonitor.Views.Modes;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -9,7 +11,8 @@ namespace ResourceMonitor
     {
         #region Fields
         private readonly GeneralViewModel generalViewModel = GeneralViewModel.GetInstance();
-        private bool hasBeenPositioned = false;
+        private readonly SettingsManager settingsManager = SettingsManager.GetInstance();
+        private readonly MonitoringService monitoringService = MonitoringService.GetInstance();
         #endregion
 
         #region Constructor
@@ -23,32 +26,20 @@ namespace ResourceMonitor
         #region Public Methods
         public void ApplyLayoutMode()
         {
-            bool isAtTop;
-
-            if (hasBeenPositioned == false)
+            switch (generalViewModel.DisplayMode)
             {
-                isAtTop = generalViewModel.NetworkOnlyMode == false;
-            }
-            else
-            {
-                isAtTop = Top == 0;
-            }
+                case "Network":
+                    ModeContentControl.Content = new NetworkMode();
+                    Width = 130;
+                    Height = 33;
+                    break;
 
-            if (generalViewModel.NetworkOnlyMode)
-            {
-                FullMonitorLayout.Visibility = Visibility.Collapsed;
-                NetworkOnlyLayout.Visibility = Visibility.Visible;
-
-                Width = 130;
-                Height = 33;
-            }
-            else
-            {
-                FullMonitorLayout.Visibility = Visibility.Visible;
-                NetworkOnlyLayout.Visibility = Visibility.Collapsed;
-
-                Width = 325;
-                Height = 45;
+                case "Full":
+                default:
+                    ModeContentControl.Content = new FullMode();
+                    Width = 325;
+                    Height = 45;
+                    break;
             }
 
             double screenWidth;
@@ -64,16 +55,32 @@ namespace ResourceMonitor
 
             Left = (screenWidth / 2) - (Width / 2);
 
-            if (isAtTop)
+            switch (generalViewModel.WindowPosition)
             {
-                Top = 0;
-            }
-            else
-            {
-                Top = SystemParameters.WorkArea.Height - Height;
-            }
+                case "Bottom":
+                    Top = SystemParameters.WorkArea.Height - Height;
+                    break;
 
-            hasBeenPositioned = true;
+                case "Top":
+                default:
+                    Top = 0;
+                    break;
+            }
+        }
+        #endregion
+
+        #region Private Methods
+        private string GetNextDisplayMode()
+        {
+            switch (generalViewModel.DisplayMode)
+            {
+                case "Full":
+                    return "Network";
+
+                case "Network":
+                default:
+                    return "Full";
+            }
         }
         #endregion
 
@@ -82,6 +89,19 @@ namespace ResourceMonitor
         {
             try
             {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                {
+                    generalViewModel.DisplayMode = GetNextDisplayMode();
+
+                    settingsManager.WriteSettings();
+
+                    monitoringService.Stop();
+                    monitoringService.Start();
+
+                    ApplyLayoutMode();
+                    return;
+                }
+
                 SettingsWindow settingsWindow = new SettingsWindow();
                 settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                 settingsWindow.Show();
@@ -89,7 +109,7 @@ namespace ResourceMonitor
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Could not open settings.\n\n" + ex.Message,
+                    "Could not change mode.\n\n" + ex.Message,
                     "Resource Monitor",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -104,14 +124,20 @@ namespace ResourceMonitor
                 return;
             }
 
-            if (Top == 0)
+            switch (generalViewModel.WindowPosition)
             {
-                Top = SystemParameters.WorkArea.Height - Height;
+                case "Top":
+                    generalViewModel.WindowPosition = "Bottom";
+                    break;
+
+                case "Bottom":
+                default:
+                    generalViewModel.WindowPosition = "Top";
+                    break;
             }
-            else
-            {
-                Top = 0;
-            }
+
+            settingsManager.WriteSettings();
+            ApplyLayoutMode();
         }
         #endregion
     }

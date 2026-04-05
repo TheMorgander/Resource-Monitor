@@ -36,12 +36,37 @@
                 </TextBox>
             </StackPanel>
 
-            <CheckBox
-                x:Name="NetworkOnlyModeCheckBox"
-                Content="Network only mode"
-                IsChecked="{Binding NetworkOnlyMode}"
-                Margin="2">
-            </CheckBox>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    Text="Display Mode"
+                    Width="125"
+                    Margin="2"
+                    VerticalAlignment="Center">
+                </TextBlock>
+                <ComboBox
+                    ItemsSource="{Binding DisplayModeOptions}"
+                    SelectedItem="{Binding DisplayMode}"
+                    Width="100"
+                    Height="22"
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    Text="Window Position"
+                    Width="125"
+                    Margin="2"
+                    VerticalAlignment="Center">
+                </TextBlock>
+                <ComboBox
+                    ItemsSource="{Binding WindowPositionOptions}"
+                    SelectedItem="{Binding WindowPosition}"
+                    Width="100"
+                    Height="22"
+                    Margin="2">
+                </ComboBox>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

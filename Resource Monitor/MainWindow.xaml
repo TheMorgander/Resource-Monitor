@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ResourceMonitor.Views.Resources"
         mc:Ignorable="d"
         Title="Resource Monitor"
         Height="45"
@@ -28,29 +27,10 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Bottom"
         Margin="2">
-
-        <Grid x:Name="FullMonitorLayout">
-            <Border
-                BorderBrush="White"
-                BorderThickness="2"
-                Opacity="0.75" />
-            <StackPanel Orientation="Horizontal">
-                <local:CPU Margin="10,0,0,0" />
-                <local:GPU Margin="0,0,0,0" />
-                <local:RAM Margin="0,0,0,0" />
-                <local:Disk Margin="0,0,0,0" />
-                <local:Network Margin="0,0,10,0" />
-            </StackPanel>
-        </Grid>
-
-        <Grid x:Name="NetworkOnlyLayout" Visibility="Collapsed">
-            <Border
-                BorderBrush="White"
-                BorderThickness="2"
-                Opacity="0.75" />
-            <StackPanel Orientation="Horizontal">
-                <local:NetworkOnly Margin="0,0,0,0" />
-            </StackPanel>
-        </Grid>
+        <Border
+            BorderBrush="White"
+            BorderThickness="2"
+            Opacity="0.75" />
+        <ContentControl x:Name="ModeContentControl" />
     </Grid>
 </Window>

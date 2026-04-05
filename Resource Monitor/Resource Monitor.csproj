@@ -98,22 +98,28 @@
     <Compile Include="ViewModels\GPUViewModel.cs" />
     <Compile Include="ViewModels\NetworkViewModel.cs" />
     <Compile Include="ViewModels\RAMViewModel.cs" />
-    <Compile Include="Views\Resources\CPU.xaml.cs">
+    <Compile Include="Views\Modes\FullMode.xaml.cs">
+      <DependentUpon>FullMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Modes\NetworkMode.xaml.cs">
+      <DependentUpon>NetworkMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Resources\Full\CPU.xaml.cs">
       <DependentUpon>CPU.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Resources\Disk.xaml.cs">
+    <Compile Include="Views\Resources\Full\Disk.xaml.cs">
       <DependentUpon>Disk.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Resources\GPU.xaml.cs">
+    <Compile Include="Views\Resources\Full\GPU.xaml.cs">
       <DependentUpon>GPU.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Resources\Network.xaml.cs">
+    <Compile Include="Views\Resources\Full\Network.xaml.cs">
       <DependentUpon>Network.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Resources\NetworkOnly.xaml.cs">
-      <DependentUpon>NetworkOnly.xaml</DependentUpon>
+    <Compile Include="Views\Resources\Network\Network.xaml.cs">
+      <DependentUpon>Network.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Resources\RAM.xaml.cs">
+    <Compile Include="Views\Resources\Full\RAM.xaml.cs">
       <DependentUpon>RAM.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\CPU.xaml.cs">
@@ -150,27 +156,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Resources\CPU.xaml">
+    <Page Include="Views\Modes\FullMode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Resources\Disk.xaml">
+    <Page Include="Views\Modes\NetworkMode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Resources\GPU.xaml">
+    <Page Include="Views\Resources\Full\CPU.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Resources\Network.xaml">
+    <Page Include="Views\Resources\Full\Disk.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Resources\NetworkOnly.xaml">
+    <Page Include="Views\Resources\Full\GPU.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\Full\Network.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Resources\Network\Network.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Resources\RAM.xaml">
+    <Page Include="Views\Resources\Full\RAM.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -242,14 +256,18 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" GeneratePathProperty="true" />
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.7-pre659" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json.Bson">
+      <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="PropertyChanged.Fody">
       <Version>4.1.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Target Name="CopyLibreHardwareMonitorRuntime" AfterTargets="Build">
     <Copy SourceFiles="$(PkgLibreHardwareMonitorLib)\runtimes\win-x64\lib\net472\LibreHardwareMonitorLib.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
   </Target>

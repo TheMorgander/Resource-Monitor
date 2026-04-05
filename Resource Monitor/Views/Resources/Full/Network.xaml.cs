@@ -1,18 +1,20 @@
 ﻿using ResourceMonitor.Models;
+using System;
 using System.Windows.Controls;
 
-namespace ResourceMonitor.Views.Resources
+namespace ResourceMonitor.Views.Resources.Full
 {
-    public partial class NetworkOnly : UserControl
+    public partial class Network : UserControl
     {
         #region Fields
-        private readonly MonitoringService monitoringService = MonitoringService.GetInstance();
+        private MonitoringService monitoringService = MonitoringService.GetInstance();
         #endregion
 
         #region Constructors
-        public NetworkOnly()
+        public Network()
         {
             InitializeComponent();
+
             DataContext = monitoringService.Network;
         }
         #endregion
